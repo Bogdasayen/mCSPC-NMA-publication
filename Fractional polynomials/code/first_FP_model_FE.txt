@@ -1,0 +1,84 @@
+model
+{
+    for (j in 1:N) {
+        timen[j] <- (time[j])
+        timen1[j] <- (equals(P1, 0.00000E+00) * log(timen[j]) + 
+            (1 - equals(P1, 0.00000E+00)) * pow(timen[j], P1))
+        r[j] ~ dbin(p[j], z[j])
+        p[j] <- 1 - exp(-h[j] * dt[j])
+
+	# Deviance calculation
+    	rhat[j] <- p[j] * z[j]
+    	
+	#Deviance contribution
+    	dev[j] <- 2 * (r[j] * (log(r[j]+0.01)-log(rhat[j] + 0.01))
+                     +  (z[j]-r[j]) * (log(z[j]-r[j]+0.01) - log(z[j]-rhat[j] + 0.01)))
+        
+	# Fixed effects model
+	# loop over datapoints
+	log(h[j]) <- Alpha[s[j], a[j], 1] + Alpha[s[j], a[j], 
+            2] * timen1[j]
+    }
+    for (i in 1:ns) {
+        for (k in 1:na[i]) {
+            Alpha[i, k, 1] <- mu[i, 1] + d[t[i, k], 1] - d[t[i, 
+                1], 1]
+            Alpha[i, k, 2] <- mu[i, 2] + d[t[i, k], 2] - d[t[i, 
+                1], 2]
+        }
+    }
+
+	# Total residual deviance
+	  totresdev <- sum(dev[])
+    
+   for (i in 1:ns) {
+        mu[i, 1:2] ~ dmnorm(mean[1:2], prec[, ])
+    }
+    d[1, 1] <- 0.00000E+00
+    d[1, 2] <- 0.00000E+00
+    for (k in 2:nt) {
+        d[k, 1:2] ~ dmnorm(mean[1:2], prec[, ])
+    }
+    for (m in 1:maxt) {
+        time1[m] <- (equals(P1, 0.00000E+00) * log(m) + (1 - equals(P1, 
+            0.00000E+00)) * pow(m, P1))
+    }
+    for (c in 1:(nt - 1)) {
+        for (k in (c + 1):nt) {
+            for (m in 1:maxt) {
+                log(HR[c, k, m]) <- (d[k, 1] - d[c, 1]) + (d[k, 
+                  2] - d[c, 2]) * time1[m]
+            }
+        }
+    }
+
+  # Hazard ratios at 2, 3 and 4 years
+  # Create these as more efficient than monitoring all of HR[]
+  HR_2year[1] <- 1
+  HR_3year[1] <- 1
+  HR_4year[1] <- 1
+  for(k in 2:nt) {
+    # Assumes unit of time is months
+    HR_2year[k] <- HR[1, k, 24]
+    HR_3year[k] <- HR[1, k, 36]
+    HR_4year[k] <- HR[1, k, 48]
+    
+    # Also a separate hazard ratio relative to the reference
+    for(m in 1:maxt) {
+      # Hazard ratio of k vs c for timepoint m
+      ref_HR[k, m] <- HR[1, k, m]
+    }
+  }
+
+    for (k in 1:nt) {
+        alpha0[k] <- mu[1, 1] + d[k, 1]
+        alpha1[k] <- mu[1, 2] + d[k, 2]
+        for (m in 1:maxt) {
+            log(HAZARD[k, m]) <- alpha0[k] + alpha1[k] * time1[m]
+            CUM_H[k, m] <- sum(HAZARD[k, 1:m])
+            T[k, m] <- 1 - exp(-CUM_H[k, m])
+            S[k, m] <- 1 - T[k, m]
+	 RMST[k, m] <- sum(S[k, m])
+        }
+    }
+}
