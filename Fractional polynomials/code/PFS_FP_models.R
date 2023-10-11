@@ -7,7 +7,7 @@ pkgs <- c("tidyverse", "readxl", "here", "haven", "multinma", "R2OpenBUGS",
 lapply(pkgs, library, character.only = T)
 set.seed(03082022)
 #source(here ("01_scripts", "cross_or.R")) 
-source(here("01_scripts", "utils.R")) 
+source(here("code", "utils.R")) 
 
 # 2. Import data --------------------------------------------------------
 PFS_data <- read_excel(here("02_data", "mHSPC PFS trt codes.xlsx"))
