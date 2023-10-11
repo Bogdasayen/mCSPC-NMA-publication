@@ -5,7 +5,7 @@
 # 1. Packages used --------------------------------------------------------
 pkgs <- c("tidyverse", "readxl", "here", "haven", "survival")
 lapply(pkgs, library, character.only = T)
-source(here("01_scripts", "utils.R"))
+source(here("code", "utils.R"))
 set.seed(03082022)
 
 # Colors for the plots
