@@ -4,7 +4,7 @@
 # 1. Packages used --------------------------------------------------------
 pkgs <- c("tidyverse", "readxl", "here", "survival", "survminer", "Hmisc")
 lapply(pkgs, library, character.only = T)
-source(here("01_scripts", "set_FP_data.R")) 
+source(here("code", "set_FP_data.R")) 
 
 # 2. Import data ---------------------------------------------------------
 km_data_directory <- here("02_data", "KM digitized")
