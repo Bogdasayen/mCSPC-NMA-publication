@@ -5,7 +5,7 @@
 pkgs <- c("tidyverse", "readxl", "here", "haven", "R2OpenBUGS")
 lapply(pkgs, library, character.only = T)
 set.seed(03082022)
-source(here("01_scripts", "utils.R")) 
+source(here("code", "utils.R")) 
 
 # 2. Import data --------------------------------------------------------
 # These data is only to match treatment codes, not actual HRs
