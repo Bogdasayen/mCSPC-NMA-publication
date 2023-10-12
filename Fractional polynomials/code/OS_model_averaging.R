@@ -12,7 +12,7 @@ source(here("Fractional polynomials/code", "utils.R"))
 OS_data <- read_excel(here("Fractional polynomials/data", "mHSPC OS trt codes.xlsx"))
 
 # Fractional polynomial data created in Os_data_preparation.R
-FP_data <- read_csv(here("Fractional polynomials/data", "FP data", "FP_data_OS.csv"))
+FP_data <- read_csv(here("Fractional polynomials/data", "FP_data_OS.csv"))
 which(FP_data$z - FP_data$r < 0) # check if any r is higher than natrisk at each interval
 
 # Transform data into a list for 1st order FP

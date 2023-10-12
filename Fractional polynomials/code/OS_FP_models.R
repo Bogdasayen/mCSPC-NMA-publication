@@ -20,7 +20,7 @@ OS_long$sample_size <- c(651, 654, 574, 576, 397, 393, 563, 562, 563, 562, 192, 
 OS_net <- set_agd_arm(OS_long, study = study, trt = treatment, y = y, se = se, sample_size = sample_size)
 
 #jpeg(here("04_figures", "network-plot_base.jpg"), width = 800, height = 700, res = 120)
-plot(OS_net, weight_nodes = TRUE, nudge = 0.1) +
+plot(OS_net, weight_nodes = TRUE) +#, nudge = 0.1) +
   #ggraph::geom_edge_fan(aes(label = unique(OS_net$agd_arm$.study)), 
   #               angle_calc = 'along',
   #               label_dodge = unit(2.5, 'mm')) +
