@@ -5,11 +5,11 @@
 # 1. Packages used --------------------------------------------------------
 pkgs <- c("tidyverse", "readxl", "here", "haven", "survival")
 lapply(pkgs, library, character.only = T)
-source(here("code", "utils.R"))
+source(here("Fractional polynomials/code", "utils.R"))
 set.seed(03082022)
 
 # 2. Import data --------------------------------------------------------
-load(here("02_data", "arasens_ipd.rda"))
+load(here("Fractional polynomials/data", "arasens_ipd.rda"))
 arasens <- arasens_ipd$CROD
 arasens_daro <- filter(arasens, treatment == "Darolutamide+docetaxel arm")
 
@@ -20,11 +20,11 @@ color=c("#FF0000", "#00FF00", "#B200ED", "#FFA500", "#0000FF", "#fb9a99", "#e31a
                  
 #3. Survival curve darolutamide ---------------------------
 # Second-order model with lowest DIC (5 models)
-fp_data_1 <- read.csv(here("02_data", "PFS_results_FP_sim14_108.csv")) 
-fp_data_2 <- read.csv(here("02_data", "PFS_results_FP_sim11_108.csv")) 
-fp_data_3 <- read.csv(here("02_data", "PFS_results_FP_sim19_108.csv")) 
-fp_data_4 <- read.csv(here("02_data", "PFS_results_FP_sim10_108.csv")) 
-fp_data_5 <- read.csv(here("02_data", "PFS_results_FP_sim15_108.csv")) 
+fp_data_1 <- read.csv(here("Fractional polynomials/data", "PFS_results_FP_sim14_108.csv")) 
+fp_data_2 <- read.csv(here("Fractional polynomials/data", "PFS_results_FP_sim11_108.csv")) 
+fp_data_3 <- read.csv(here("Fractional polynomials/data", "PFS_results_FP_sim19_108.csv")) 
+fp_data_4 <- read.csv(here("Fractional polynomials/data", "PFS_results_FP_sim10_108.csv")) 
+fp_data_5 <- read.csv(here("Fractional polynomials/data", "PFS_results_FP_sim15_108.csv")) 
 
 # Export survival at 108 months
 daro_surv_model_1 <- fp_data_1[which(fp_data_1$X == "S[1,108]"),c(6,4,8)]
@@ -39,7 +39,7 @@ daro_surv_models <- bind_rows(daro_surv_model_1,
                               daro_surv_model_5)
 
 daro_surv_models <- apply(daro_surv_models, 1, format_results)
-write.csv(daro_surv_models, here("05_tables", "daro_surv_models_PFS.csv"))
+write.csv(daro_surv_models, here("Fractional polynomials/data", "daro_surv_models_PFS.csv"))
 
 # Survival data to plot
 graph_daro <- data.frame(time=c(0:108),
@@ -53,7 +53,7 @@ graph_daro <- data.frame(time=c(0:108),
 KM.est_daro <- survfit(Surv(time, event) ~ 1, data= arasens_daro, 
                        type="kaplan-meier", conf.int=FALSE)
 
-jpeg(file = here("04_figures", "extrapolation_darolutamide_PFS_v3.jpg"), width = 900, height = 800, res = 120)
+#jpeg(file = here("04_figures", "extrapolation_darolutamide_PFS_v3.jpg"), width = 900, height = 800, res = 120)
 
 plot(KM.est_daro, xlab="Time (months)", ylab="PFS", xaxt="n", yaxt="n", main=" ",
      xlim = c(0,108), ylim=c(0,1),
@@ -78,16 +78,16 @@ legend(x = 70, y = 1,
        lty=c(1,1,1,1), ncol=1, text.width=6, box.lty=0)
 
 # save plot
-dev.off()
+#dev.off()
 
 
 #4. Survival curve enza+ADT ---------------------------
 # Second-order model with lowest DIC (5 models) ENZAMET as comparator trial
-fp_data_1_ENZA <- read.csv(here("02_data", "PFS_results_FP_sim14_ENZA.csv")) 
-fp_data_2_ENZA <- read.csv(here("02_data", "PFS_results_FP_sim11_ENZA.csv")) 
-fp_data_3_ENZA <- read.csv(here("02_data", "PFS_results_FP_sim19_ENZA.csv")) 
-fp_data_4_ENZA <- read.csv(here("02_data", "PFS_results_FP_sim10_ENZA.csv")) 
-fp_data_5_ENZA <- read.csv(here("02_data", "PFS_results_FP_sim15_ENZA.csv")) 
+fp_data_1_ENZA <- read.csv(here("Fractional polynomials/data", "PFS_results_FP_sim14_ENZA.csv")) 
+fp_data_2_ENZA <- read.csv(here("Fractional polynomials/data", "PFS_results_FP_sim11_ENZA.csv")) 
+fp_data_3_ENZA <- read.csv(here("Fractional polynomials/data", "PFS_results_FP_sim19_ENZA.csv")) 
+fp_data_4_ENZA <- read.csv(here("Fractional polynomials/data", "PFS_results_FP_sim10_ENZA.csv")) 
+fp_data_5_ENZA <- read.csv(here("Fractional polynomials/data", "PFS_results_FP_sim15_ENZA.csv")) 
 
                          
 # Export survival at 108 months
@@ -103,12 +103,12 @@ enza_surv_models <- bind_rows(enza_surv_model_1,
                               enza_surv_model_5)
 
 enza_surv_models <- apply(enza_surv_models, 1, format_results)
-write.csv(enza_surv_models, here("05_tables", "enza_surv_models_PFS.csv"))
+write.csv(enza_surv_models, here("Fractional polynomials/data", "enza_surv_models_PFS.csv"))
 
 # IPDs
-ENZAMET_enza <- read_csv(here("02_data", "IPD reconstructed", "PFS_ENZAMET_enzalutamide_ipd.csv"))
-ARCHES_enza <- read_csv(here("02_data", "IPD reconstructed", "PFS_ARCHES_ENZA+ADT_ipd.csv"))
-VAI_enza <- read_csv(here("02_data", "IPD reconstructed", "PFS_Vaishampayan 2021_enzalutamide_ipd.csv"))
+ENZAMET_enza <- read_csv(here("Fractional polynomials/data", "IPD reconstructed", "PFS_ENZAMET_enzalutamide_ipd.csv"))
+ARCHES_enza <- read_csv(here("Fractional polynomials/data", "IPD reconstructed", "PFS_ARCHES_ENZA+ADT_ipd.csv"))
+VAI_enza <- read_csv(here("Fractional polynomials/data", "IPD reconstructed", "PFS_Vaishampayan 2021_enzalutamide_ipd.csv"))
 
 graph_enza <- data.frame(time=c(0:108),
                          model_1=c(1, fp_data_1_ENZA$mean[325:432]),
@@ -125,7 +125,7 @@ KM.est_enzamet <- survfit(Surv(time, event) ~ 1, data= ENZAMET_enza,
 KM.est_vai <- survfit(Surv(time, event) ~ 1, data= VAI_enza, 
                        type="kaplan-meier", conf.int=FALSE)
 
-jpeg(file = here("04_figures", "extrapolation_enza+ADT_PFS_v4.jpg"), width = 900, height = 800, res = 120)
+#jpeg(file = here("04_figures", "extrapolation_enza+ADT_PFS_v4.jpg"), width = 900, height = 800, res = 120)
 
 plot(KM.est_enza, xlab="Time (months)", ylab="PFS", xaxt="n", yaxt="n", main=" ",
      xlim = c(0,108), ylim=c(0,1),
@@ -153,16 +153,16 @@ legend(x = 70, y = 1,
        ncol=1, text.width=6, box.lty=0)
 
 # save plot
-dev.off()
+#dev.off()
 
 
 #5. Survival curve docetaxel+ADT ---------------------------
 # Second-order model with lowest DIC (5 models) CHAARTED as comparator trial
-fp_data_1_CHAAR <- read.csv(here("02_data", "PFS_results_FP_sim14_CHAART.csv")) 
-fp_data_2_CHAAR <- read.csv(here("02_data", "PFS_results_FP_sim11_CHAART.csv")) 
-fp_data_3_CHAAR <- read.csv(here("02_data", "PFS_results_FP_sim19_CHAART.csv")) 
-fp_data_4_CHAAR <- read.csv(here("02_data", "PFS_results_FP_sim10_CHAART.csv")) 
-fp_data_5_CHAAR <- read.csv(here("02_data", "PFS_results_FP_sim15_CHAART.csv")) 
+fp_data_1_CHAAR <- read.csv(here("Fractional polynomials/data", "PFS_results_FP_sim14_CHAART.csv")) 
+fp_data_2_CHAAR <- read.csv(here("Fractional polynomials/data", "PFS_results_FP_sim11_CHAART.csv")) 
+fp_data_3_CHAAR <- read.csv(here("Fractional polynomials/data", "PFS_results_FP_sim19_CHAART.csv")) 
+fp_data_4_CHAAR <- read.csv(here("Fractional polynomials/data", "PFS_results_FP_sim10_CHAART.csv")) 
+fp_data_5_CHAAR <- read.csv(here("Fractional polynomials/data", "PFS_results_FP_sim15_CHAART.csv")) 
 
 # Export survival at 108 months
 doc_surv_model_1 <- fp_data_1[which(fp_data_1_CHAAR$X == "S[2,108]"),c(6,4,8)]
@@ -177,7 +177,7 @@ doc_surv_models <- bind_rows(doc_surv_model_1,
                               doc_surv_model_5)
 
 doc_surv_models <- apply(doc_surv_models, 1, format_results)
-write.csv(doc_surv_models, here("05_tables", "doc_surv_models_PFS.csv"))
+write.csv(doc_surv_models, here("Fractional polynomials/data", "doc_surv_models_PFS.csv"))
 
 # IPDs
 graph_doc <- data.frame(time=c(0:108),
@@ -191,19 +191,19 @@ graph_doc <- data.frame(time=c(0:108),
 arasens_pcb <- filter(arasens, treatment == "Placebo+docetaxel arm")
 
 # CHAARTED
-CHAARTED_doc <- read_csv(here("02_data", "IPD reconstructed", "PFS_CHAARTED_ADT+Doc_ipd.csv"))
+CHAARTED_doc <- read_csv(here("Fractional polynomials/data", "IPD reconstructed", "PFS_CHAARTED_ADT+Doc_ipd.csv"))
 
 # PEACE-1
-PEACE_doc <- read_csv(here("02_data", "IPD reconstructed", "PFS_PEACE_ADT+Doc_ipd.csv"))
+PEACE_doc <- read_csv(here("Fractional polynomials/data", "IPD reconstructed", "PFS_PEACE_ADT+Doc_ipd.csv"))
 
 # STAMPEDE-3
-STAMP3_doc <- read_csv(here("02_data", "IPD reconstructed", "PFS_STAMPEDE-3_ADT+Doc_ipd.csv"))
+STAMP3_doc <- read_csv(here("Fractional polynomials/data", "IPD reconstructed", "PFS_STAMPEDE-3_ADT+Doc_ipd.csv"))
 
 # STAMPEDE-4
-STAMP4_doc <- read_csv(here("02_data", "IPD reconstructed", "PFS_STAMPEDE-4_ADT+DocP_ipd.csv"))
+STAMP4_doc <- read_csv(here("Fractional polynomials/data", "IPD reconstructed", "PFS_STAMPEDE-4_ADT+DocP_ipd.csv"))
 
 # GETUG
-GETUG_doc <- read_csv(here("02_data", "IPD reconstructed", "PFS_GETUG_ADT+Doc_ipd.csv"))
+GETUG_doc <- read_csv(here("Fractional polynomials/data", "IPD reconstructed", "PFS_GETUG_ADT+Doc_ipd.csv"))
 
 # KM curves
 KM.est_doc <- survfit(Surv(time, event) ~ 1, data= CHAARTED_doc, 
@@ -224,7 +224,7 @@ KM.est_doc5 <- survfit(Surv(time, event) ~ 1, data= STAMP4_doc,
 KM.est_doc6 <- survfit(Surv(time, event) ~ 1, data= GETUG_doc, 
                       type="kaplan-meier", conf.int=FALSE)
 
-jpeg(file = here("04_figures", "extrapolation_doc+ADT_PFS_v4.jpg"), width = 900, height = 800, res = 120)
+#jpeg(file = here("04_figures", "extrapolation_doc+ADT_PFS_v4.jpg"), width = 900, height = 800, res = 120)
 
 plot(KM.est_doc, xlab="Time (months)", ylab="PFS", xaxt="n", yaxt="n", main=" ",
      xlim = c(0,108), ylim=c(0,1),
@@ -258,15 +258,15 @@ legend(x = 60, y = 1,
        ncol=1, text.width=6, box.lty=0)
 
 # save plot
-dev.off()
+#dev.off()
 
 #6. Survival curve abi ---------------------------
 # Second-order model with lowest DIC (5 models) LATITUDE as comparator trial
-fp_data_1_LATITUDE <- read.csv(here("02_data", "PFS_results_FP_sim14_LATITUDE.csv")) 
-fp_data_2_LATITUDE <- read.csv(here("02_data", "PFS_results_FP_sim11_LATITUDE.csv")) 
-fp_data_3_LATITUDE <- read.csv(here("02_data", "PFS_results_FP_sim19_LATITUDE.csv")) 
-fp_data_4_LATITUDE <- read.csv(here("02_data", "PFS_results_FP_sim10_LATITUDE.csv")) 
-fp_data_5_LATITUDE <- read.csv(here("02_data", "PFS_results_FP_sim15_LATITUDE.csv")) 
+fp_data_1_LATITUDE <- read.csv(here("Fractional polynomials/data", "PFS_results_FP_sim14_LATITUDE.csv")) 
+fp_data_2_LATITUDE <- read.csv(here("Fractional polynomials/data", "PFS_results_FP_sim11_LATITUDE.csv")) 
+fp_data_3_LATITUDE <- read.csv(here("Fractional polynomials/data", "PFS_results_FP_sim19_LATITUDE.csv")) 
+fp_data_4_LATITUDE <- read.csv(here("Fractional polynomials/data", "PFS_results_FP_sim10_LATITUDE.csv")) 
+fp_data_5_LATITUDE <- read.csv(here("Fractional polynomials/data", "PFS_results_FP_sim15_LATITUDE.csv")) 
 
 
 # Export survival at 108 months
@@ -282,7 +282,7 @@ abi_surv_models <- bind_rows(abi_surv_model_1,
                              abi_surv_model_5)
 
 abi_surv_models <- apply(abi_surv_models, 1, format_results)
-write.csv(abi_surv_models, here("05_tables", "abi_surv_models_PFS.csv"))
+write.csv(abi_surv_models, here("Fractional polynomials/data", "abi_surv_models_PFS.csv"))
 
 
 # IPDs
@@ -293,8 +293,8 @@ graph_abi <- data.frame(time=c(0:108),
                         model_4=c(1, fp_data_4$mean[433:540]),
                         model_5=c(1, fp_data_5$mean[433:540]))
 
-LATITUDE_abi <- read_csv(here("02_data", "IPD reconstructed", "PFS_LATITUDE_AA+P+ADT_ipd.csv"))
-STAMP_abi <- read_csv(here("02_data", "IPD reconstructed", "PFS_STAMPEDE-4_ADT+AAP_ipd.csv"))
+LATITUDE_abi <- read_csv(here("Fractional polynomials/data", "IPD reconstructed", "PFS_LATITUDE_AA+P+ADT_ipd.csv"))
+STAMP_abi <- read_csv(here("Fractional polynomials/data", "IPD reconstructed", "PFS_STAMPEDE-4_ADT+AAP_ipd.csv"))
 
 # KM curve
 KM.est_abi <- survfit(Surv(time, event) ~ 1, data= LATITUDE_abi, 
@@ -303,7 +303,7 @@ KM.est_abi2 <- survfit(Surv(time, event) ~ 1, data= STAMP_abi,
                        type="kaplan-meier", conf.int=FALSE)
 
 
-jpeg(file = here("04_figures", "extrapolation_abiraterone_PFS_v4.jpg"), width = 900, height = 800, res = 120)
+#jpeg(file = here("04_figures", "extrapolation_abiraterone_PFS_v4.jpg"), width = 900, height = 800, res = 120)
 
 plot(KM.est_abi, xlab="Time (months)", ylab="PFS", xaxt="n", yaxt="n", main=" ",
      xlim = c(0,108), ylim=c(0,1),
@@ -329,7 +329,7 @@ legend(x = 60, y = 1,
        lty=c(1,1,1,1, 1,1,2), lwd=c(1,1,1,1, 1,2,1), ncol=1, text.width=6, box.lty=0)
 
 # save plot
-dev.off()
+#dev.off()
 
 
 # Survival at 108 months for each treatment-----------------------
@@ -353,4 +353,4 @@ surv_108 <- bind_rows(surv_daro,
                       surv_abidoc)
 
 surv_108 <- apply(surv_108, 1, summary.stats)
-write.csv(surv_108, here("05_tables", "median_survival_PFS.csv"))
+write.csv(surv_108, here("Fractional polynomials/data", "median_survival_PFS.csv"))
