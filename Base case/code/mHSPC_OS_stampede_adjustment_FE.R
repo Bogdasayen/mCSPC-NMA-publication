@@ -8,7 +8,7 @@ library(readxl)
 library(here)
 
 # Load the data 
-mHSPC_OS_data_PO <- read_excel(here("Base case/data", "mHSPC OS data PO.xlsx"))
+mHSPC_OS_data <- read_excel(here("Base case/data", "mHSPC OS data PO.xlsx"))
 
 
 # Normal likelihood, identity link, fixed effects
@@ -168,13 +168,13 @@ num_sims <- 10000 * n_chains
 burn_in <- 10000 * n_chains	
 
 # Define the bugs data 
-ns <- nrow(mHSPC_OS_data_PO)
-t  <- array(c(mHSPC_OS_data_PO$t1, mHSPC_OS_data_PO$t2), dim = c(ns, 2)) 
+ns <- nrow(mHSPC_OS_data)
+t  <- array(c(mHSPC_OS_data$t1, mHSPC_OS_data$t2), dim = c(ns, 2)) 
 nt <- max(t) 
-y  <- array(c(rep(0, ns), mHSPC_OS_data_PO$y), dim = c(ns, 2))
-se <- array(c(rep(0, ns), mHSPC_OS_data_PO$se), dim = c(ns, 2))
+y  <- array(c(rep(0, ns), mHSPC_OS_data$y), dim = c(ns, 2))
+se <- array(c(rep(0, ns), mHSPC_OS_data$se), dim = c(ns, 2))
 
-study_names <- gsub("#", "", mHSPC_OS_data_PO$`#ID`)
+study_names <- gsub("#", "", mHSPC_OS_data$`#ID`)
 rownames(t) <- rownames(y) <- rownames(se) <- study_names
 
 
