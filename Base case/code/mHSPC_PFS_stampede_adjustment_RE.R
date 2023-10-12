@@ -6,8 +6,10 @@
 # Load the R2OpenBUGS package
 library(R2OpenBUGS)
 library(readxl)
+library(here)
 
-mHSPC_OS_data <- read_excel("mHSPC PFS data PO.xlsx")
+# Load the data 
+mHSPC_PFS_data <- read_excel(here("Base case/data", "mHSPC PFS data PO.xlsx")) 
 
 
 # Random effects model
@@ -189,13 +191,13 @@ burn_in <- 10000 * n_chains
 
 # Define the bugs data 
 # also, to get the correct number of dimensions is good to use a "comparator" arm with 0 for the lhr and the se
-ns <- nrow(mHSPC_PFS_data_PO)
-t  <- array(c(mHSPC_PFS_data_PO$t1, mHSPC_PFS_data_PO$t2), dim = c(ns, 2)) 
+ns <- nrow(mHSPC_PFS_data)
+t  <- array(c(mHSPC_PFS_data$t1, mHSPC_PFS_data$t2), dim = c(ns, 2)) 
 nt <- max(t) 
-y  <- array(c(rep(0, ns), mHSPC_PFS_data_PO$y), dim = c(ns, 2))
-se <- array(c(rep(0, ns), mHSPC_PFS_data_PO$se), dim = c(ns, 2))
+y  <- array(c(rep(0, ns), mHSPC_PFS_data$y), dim = c(ns, 2))
+se <- array(c(rep(0, ns), mHSPC_PFS_data$se), dim = c(ns, 2))
 
-study_names <- gsub("#", "", mHSPC_PFS_data_PO$`#ID`)
+study_names <- gsub("#", "", mHSPC_PFS_data$`#ID`)
 rownames(t) <- rownames(y) <- rownames(se) <- study_names
 
 
