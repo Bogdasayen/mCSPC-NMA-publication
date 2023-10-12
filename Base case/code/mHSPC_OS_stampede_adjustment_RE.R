@@ -5,6 +5,10 @@
 # Load the R2OpenBUGS package
 library(R2OpenBUGS)
 library(readxl)
+library(here)
+
+# Load the data 
+mHSPC_OS_data_PO <- read_excel(here("Base case/data", "mHSPC OS data PO.xlsx"))
 
 # Random effects model
 model_normal_identity_re <- function()
