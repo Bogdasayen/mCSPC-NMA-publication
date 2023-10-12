@@ -9,10 +9,10 @@ source(here("Fractional polynomials/code", "utils.R"))
 
 # 2. Import data --------------------------------------------------------
 # These data is only to match treatment codes, not actual HRs
-OS_data <- read_excel(here("02_data", "mHSPC OS trt codes.xlsx"))
+OS_data <- read_excel(here("Fractional polynomials/data", "mHSPC OS trt codes.xlsx"))
 
 # Fractional polynomial data created in Os_data_preparation.R
-FP_data <- read_csv(here("02_data", "FP data", "FP_data_OS.csv"))
+FP_data <- read_csv(here("Fractional polynomials/data", "FP data", "FP_data_OS.csv"))
 which(FP_data$z - FP_data$r < 0) # check if any r is higher than natrisk at each interval
 
 # Transform data into a list for 1st order FP
@@ -48,7 +48,7 @@ second_FP$prec <- structure(.Data= c(1.00000E-04, 0, 0,
                                      0, 0, 1.00000E-02), .Dim=c(3, 3))
 
 # call the model
-second_FP_model_FE <- here("03_models", "second_FP_model_FE.txt")
+second_FP_model_FE <- here("Fractional polynomials/code", "second_FP_model_FE.txt")
 
 #Initial Values 
 second_inits <- function(){
@@ -86,7 +86,7 @@ HR_export_60 <- as_tibble(round(1/second_FP_sim1_HR$summary[grep("HR_5year", row
 HR_export_60 <- mutate(HR_export_60, string = paste0(mean, " (", `97.5%` ,", ", `2.5%`, ")"))
 
 HR_export <- bind_cols(HR_export_36, HR_export_48, HR_export_60)
-write_csv(HR_export, here("05_tables", "OS_HR_basecase.csv"))
+write_csv(HR_export, here("Fractional polynomials/data", "OS_HR_basecase.csv"))
 
 # Select a sample of MCMC chains to produce model averaging results
 second_FP_sim1_HR_array <- second_FP_sim1_HR$sims.array[,1,]
@@ -189,7 +189,7 @@ HR_60 <- c(doc_HR_60, enza_HR_60, adt_HR_60, abi_HR_60, apa_HR_60, enzadoc_HR_60
 
 # HR to be exported
 HRs <- cbind(HR_36, HR_48, HR_60)
-write_csv(as_tibble(HRs), here("05_tables", "model_average_HRs_OS_v2.csv"))
+write_csv(as_tibble(HRs), here("Fractional polynomials/data", "model_average_HRs_OS_v2.csv"))
 
 #2. RMST at 60 months----------------------------------
 # Base case with model with the lowest DIC
@@ -226,7 +226,7 @@ diff <- c(NA, diff_doc, diff_enza, diff_adt, diff_abi, diff_apa,
           diff_enzadoc, diff_abidoc)
 
 # Export results
-write.csv(bind_cols(rmst, diff), here("05_tables", "rmst_os_v3.csv"))
+write.csv(bind_cols(rmst, diff), here("Fractional polynomials/data", "rmst_os_v3.csv"))
 
 # Functions to call several times (slightly different from HRs)
 model_average_rmst <- function(bugs_arrays, params, treatment){
@@ -281,19 +281,19 @@ diff_abidoc <-  model_average_rmst_rel(arrays, params = params, treatment = 8, r
 diff <- c(NA, diff_doc, diff_enza, diff_adt, diff_abi, diff_apa,
           diff_enzadoc, diff_abidoc)
 
-write.csv(bind_cols(rmst, diff), here("05_tables", "model_average_rmst_os_v2.csv"))
+write.csv(bind_cols(rmst, diff), here("Fractional polynomials/data", "model_average_rmst_os_v2.csv"))
 
 
 #3. Survival (%OS) at 60 months-----------------------------------
 # Import arrays from the "S" parameter
-fp_data_1_array <- read_csv(here("02_data", "OS_array_FP_sim14.csv"), col_select = -1)  # model with P1: -0.5, P2: -0.5
-fp_data_2_array <- read_csv(here("02_data", "OS_array_FP_sim15.csv"), col_select = -1)  # model with P1: -0.5, P2:  0
-fp_data_3_array <- read_csv(here("02_data", "OS_array_FP_sim11.csv"), col_select = -1)  # model with P1: -1,   P2:  0.5
-fp_data_4_array <- read_csv(here("02_data", "OS_array_FP_sim10.csv"), col_select = -1)  # model with P1: -1,   P2:  0
-fp_data_5_array <- read_csv(here("02_data", "OS_array_FP_sim09.csv"), col_select = -1)  # model with P1: -1,   P2: -0.5
+fp_data_1_array <- read_csv(here("Fractional polynomials/data", "OS_array_FP_sim14.csv"), col_select = -1)  # model with P1: -0.5, P2: -0.5
+fp_data_2_array <- read_csv(here("Fractional polynomials/data", "OS_array_FP_sim15.csv"), col_select = -1)  # model with P1: -0.5, P2:  0
+fp_data_3_array <- read_csv(here("Fractional polynomials/data", "OS_array_FP_sim11.csv"), col_select = -1)  # model with P1: -1,   P2:  0.5
+fp_data_4_array <- read_csv(here("Fractional polynomials/data", "OS_array_FP_sim10.csv"), col_select = -1)  # model with P1: -1,   P2:  0
+fp_data_5_array <- read_csv(here("Fractional polynomials/data", "OS_array_FP_sim09.csv"), col_select = -1)  # model with P1: -1,   P2: -0.5
 
 # Base case model
-fp_data_1 <- read.csv(here("02_data", "OS_results_FP_sim14.csv"))  # model with P1: -0.5, P2: -0.5
+fp_data_1 <- read.csv(here("Fractional polynomials/data", "OS_results_FP_sim14.csv"))  # model with P1: -0.5, P2: -0.5
 surv_daro    <- filter(fp_data_1, X == "S[1,60]")
 surv_doc     <- filter(fp_data_1, X == "S[2,60]")
 surv_enza    <- filter(fp_data_1, X == "S[3,60]")
@@ -306,7 +306,7 @@ surv_abidoc  <- filter(fp_data_1, X == "S[8,60]")
 surv_base <- bind_rows(surv_daro, surv_doc, surv_enza, surv_adt, surv_abi, surv_apa, surv_enzadoc, surv_abidoc)
 surv_base <- select(surv_base, c(mean, X2.5., X97.5.)) %>% round(digits = 2)
 surv_base <- mutate(surv_base, string = paste0(mean, " (", X2.5. ,", ", X97.5., ")"))
-write_csv(surv_base, here("05_tables", "basecase_surv_60months.csv"))
+write_csv(surv_base, here("Fractional polynomials/data", "basecase_surv_60months.csv"))
 
 # function to calculate average survival at 60 months
 model_average_surv <- function(bugs_arrays, treatment){
@@ -333,4 +333,4 @@ surv_abidoc  <- model_average_surv(bugs_arrays = arrays_surv, treatment = 8)
 
 # export results
 surv_average <- c(surv_daro, surv_doc, surv_enza, surv_adt, surv_abi, surv_apa, surv_enzadoc, surv_abidoc)
-write_csv(as_tibble(surv_average), here("05_tables", "model_average_surv_60months.csv"))
+write_csv(as_tibble(surv_average), here("Fractional polynomials/data", "model_average_surv_60months.csv"))
