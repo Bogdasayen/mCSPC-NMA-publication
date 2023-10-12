@@ -5,7 +5,10 @@
 # Load the R2OpenBUGS package
 library(R2OpenBUGS)
 library(readxl)
-#mHSPC_OS_data <- read_excel("mHSPC OS data HT.xlsx")
+library(here)
+
+# Load the data 
+mHSPC_OS_data_PO_class_effects_all_merged <- read_excel(here("Class effects/data", "mHSPC OS data PO_class_effects_all merged.xlsx")) 
 
 
 # Random effects model
