@@ -7,10 +7,10 @@ pkgs <- c("tidyverse", "readxl", "here", "haven", "multinma", "R2OpenBUGS",
 lapply(pkgs, library, character.only = T)
 set.seed(03082022)
 #source(here ("01_scripts", "cross_or.R")) 
-source(here("code", "utils.R")) 
+source(here("Fractional polynomials/code", "utils.R")) 
 
 # 2. Import data --------------------------------------------------------
-PFS_data <- read_excel(here("02_data", "mHSPC PFS trt codes.xlsx"))
+PFS_data <- read_excel(here("Fractional polynomials/data", "mHSPC PFS trt codes.xlsx"))
 
 # Set up the evidence network
 PFS_long <- pivot_longer(PFS_data, cols = c(t1, t2), names_to = "trt", values_to = "treatment")
@@ -19,7 +19,7 @@ graph <- as.igraph(PFS_net)
 plot(graph)
 
 # Import data from KM curves
-FP_data <- read_csv(here("02_data", "FP data", "FP_data_PFS.csv"))
+FP_data <- read_csv(here("Fractional polynomials/data", "FP data", "FP_data_PFS.csv"))
 which(FP_data$z - FP_data$r < 0) # check if any r is higher than natrisk at each interval
 
 # Transform data into a list for 1st order FP
@@ -47,7 +47,7 @@ first_FP
 
 # 3.2 Fit Fixed Effects 1st order fractional polynomial model----------------
 # Call the model
-first_FP_model_FE <- here("03_models", "first_FP_model_FE.txt")
+first_FP_model_FE <- here("Fractional polynomials/code", "first_FP_model_FE.txt")
 
 #Initial Values 
 inits <- function(){
@@ -131,7 +131,7 @@ first_FP_sim7
 
 # 4. Random effects models  -------------------------------
 # Call the model
-first_FP_model_RE <- here("03_models", "first_FP_model_RE.txt")
+first_FP_model_RE <- here("Fractional polynomials/code", "first_FP_model_RE.txt")
 
 #Initial Values 
 inits_RE <- function(){
@@ -221,7 +221,7 @@ first_FP_sim7_RE
 
 # 5. Fixed Effects 2nd order fractional polynomial model----------------
 # call the model
-second_FP_model_FE <- here("03_models", "second_FP_model_FE.txt")
+second_FP_model_FE <- here("Fractional polynomials/code", "second_FP_model_FE.txt")
 
 # data for 2nd order FP model
 second_FP <- first_FP
@@ -493,7 +493,7 @@ second_FP_sim_24
 
 # 6. Second-order FP Random effects models  -------------------------------
 # call the model
-second_FP_model_RE <- here("03_models", "second_FP_model_RE.txt")
+second_FP_model_RE <- here("Fractional polynomials/code", "second_FP_model_RE.txt")
 
 # data for 2nd order FP model
 second_FP <- first_FP
@@ -781,7 +781,7 @@ first_FE_fit <- round(matrix(first_FE_fit, nrow = 7, ncol = 4, byrow = TRUE))
 p1 <- c(-2, -1, -0.5, 0, 0.5, 1, 2)
 first_FE_fit <- cbind(first_FE_fit, p1)
 colnames(first_FE_fit) <- c("Deviance", "pD", "DIC", "Residual deviance", "P1")
-write.csv(first_FE_fit, here("05_tables", "PFS_first_FP_FE_fit.csv"))
+write.csv(first_FE_fit, here("Fractional polynomials/data", "PFS_first_FP_FE_fit.csv"))
 
 # 7.2 First-order FP RE models
 first_RE_models <- list(first_FP_sim1_RE,
@@ -798,7 +798,7 @@ first_RE_fit <- round(matrix(first_RE_fit, nrow = 7, ncol = 4, byrow = TRUE))
 p1 <- c(-2, -1, -0.5, 0, 0.5, 1, 2)
 first_RE_fit <- cbind(first_RE_fit, p1)
 colnames(first_RE_fit) <- c("Deviance", "pD", "DIC", "Residual deviance", "P1")
-write.csv(first_RE_fit, here("05_tables", "PFS_first_FP_RE_fit.csv"))
+write.csv(first_RE_fit, here("Fractional polynomials/data", "PFS_first_FP_RE_fit.csv"))
 
 # 7.3 Second-order FP FE models
 second_FE_models <- list(
@@ -835,7 +835,7 @@ p2 <- c(-2, -1, -0.5, 0, 0.5, 1, 2, -1, -0.5, 0, 0.5, 1, 2, -0.5,    0,    1,   
 second_FE_fit <- cbind(second_FE_fit, p1)
 second_FE_fit <- cbind(second_FE_fit, p2)
 colnames(second_FE_fit) <- c("Deviance", "pD", "DIC", "Residual deviance", "P1", "P2")
-write.csv(second_FE_fit, here("05_tables", "PFS_second_FP_FE_fit.csv"))
+write.csv(second_FE_fit, here("Fractional polynomials/data", "PFS_second_FP_FE_fit.csv"))
 
 # 7.4 Second-order FP RE models
 second_RE_models <- list(
@@ -872,7 +872,7 @@ p2 <- c(-2, -1, -0.5, 0, 0.5, 1, 2, -1, -0.5, 0, 0.5, 1, 2, -0.5,    0,    1,   
 second_RE_fit <- cbind(second_RE_fit, p1)
 second_RE_fit <- cbind(second_RE_fit, p2)
 colnames(second_RE_fit) <- c("Deviance", "pD", "DIC", "Residual deviance", "P1", "P2")
-write.csv(second_RE_fit, here("05_tables", "PFS_second_FP_RE_fit.csv"))
+write.csv(second_RE_fit, here("Fractional polynomials/data", "PFS_second_FP_RE_fit.csv"))
 
 #8 Models with lowest DIC for extrapolation --------------------------
 arrange(as_tibble(first_FE_fit), `Residual deviance`)
@@ -889,7 +889,7 @@ second_FP_sim_14 <- bugs(data = second_FP, inits = second_inits, model.file = se
                          debug = FALSE)
 
 results_second_FP_sim_14 <- second_FP_sim_14$summary
-write.csv(results_second_FP_sim_14, here("02_data", "PFS_results_FP_sim14_108.csv"))
+write.csv(results_second_FP_sim_14, here("Fractional polynomials/data", "PFS_results_FP_sim14_108.csv"))
 
 # export array for model averaging (only a sample to reduce computation time)
 array_second_FP_sim_14 <- second_FP_sim_14$sims.array
@@ -898,7 +898,7 @@ time_point <- c("S[1,36]", "S[2,36]", "S[3,36]",
                 "S[7,36]", "S[8,36]") # vector to extract timepoints of interest
 array_second_FP_sim_14 <- array_second_FP_sim_14[, 1, time_point]
 array_second_FP_sim_14 <- apply(array_second_FP_sim_14, 2, sample, size = 500) 
-write.csv(array_second_FP_sim_14, here("02_data", "PFS_array_FP_sim14.csv"))
+write.csv(array_second_FP_sim_14, here("Fractional polynomials/data", "PFS_array_FP_sim14.csv"))
 
 # Second-order FP, FE model, P1 = -1, P2 = 0.5 ----------------
 second_FP$P1 <- -1
@@ -910,12 +910,12 @@ second_FP_sim_11 <- bugs(data = second_FP, inits = second_inits, model.file = se
                          debug = FALSE)
 
 results_second_FP_sim_11 <- second_FP_sim_11$summary
-write.csv(results_second_FP_sim_11, here("02_data", "PFS_results_FP_sim11_108.csv"))
+write.csv(results_second_FP_sim_11, here("Fractional polynomials/data", "PFS_results_FP_sim11_108.csv"))
 
 array_second_FP_sim_11 <- second_FP_sim_11$sims.array
 array_second_FP_sim_11 <- array_second_FP_sim_11[, 1, time_point]
 array_second_FP_sim_11 <- apply(array_second_FP_sim_11, 2, sample, size = 500)
-write.csv(array_second_FP_sim_11, here("02_data", "PFS_array_FP_sim11.csv"))
+write.csv(array_second_FP_sim_11, here("Fractional polynomials/data", "PFS_array_FP_sim11.csv"))
 
 # Second-order FP, FE model, P1 = 0, P2 = 0.5 ----------------
 second_FP$P1 <- 0
@@ -927,12 +927,12 @@ second_FP_sim_19 <- bugs(data = second_FP, inits = second_inits, model.file = se
                          debug = FALSE)
 
 results_second_FP_sim_19 <- second_FP_sim_19$summary
-write.csv(results_second_FP_sim_19, here("02_data", "PFS_results_FP_sim19_108.csv"))
+write.csv(results_second_FP_sim_19, here("Fractional polynomials/data", "PFS_results_FP_sim19_108.csv"))
 
 array_second_FP_sim_19 <- second_FP_sim_19$sims.array
 array_second_FP_sim_19 <- array_second_FP_sim_19[, 1, time_point]
 array_second_FP_sim_19 <- apply(array_second_FP_sim_19, 2, sample, size = 500)
-write.csv(array_second_FP_sim_19, here("02_data", "PFS_array_FP_sim19.csv"))
+write.csv(array_second_FP_sim_19, here("Fractional polynomials/data", "PFS_array_FP_sim19.csv"))
 
 # Second-order FP, FE model, P1 = -1, P2 = 0.5 ----------------
 second_FP$P1 <- -1
@@ -944,12 +944,12 @@ second_FP_sim_10 <- bugs(data = second_FP, inits = second_inits, model.file = se
                          debug = FALSE)
 
 results_second_FP_sim_10 <- second_FP_sim_10$summary
-write.csv(results_second_FP_sim_10, here("02_data", "PFS_results_FP_sim10_108.csv"))
+write.csv(results_second_FP_sim_10, here("Fractional polynomials/data", "PFS_results_FP_sim10_108.csv"))
 
 array_second_FP_sim_10 <- second_FP_sim_10$sims.array
 array_second_FP_sim_10 <- array_second_FP_sim_10[, 1, time_point]
 array_second_FP_sim_10 <- apply(array_second_FP_sim_10, 2, sample, size = 500)
-write.csv(array_second_FP_sim_10, here("02_data", "PFS_array_FP_sim10.csv"))
+write.csv(array_second_FP_sim_10, here("Fractional polynomials/data", "PFS_array_FP_sim10.csv"))
 
 # Second-order FP, FE model, P1 = -0.5, P2 = 0 ----------------
 second_FP$P1 <- -0.5
@@ -961,16 +961,16 @@ second_FP_sim_15 <- bugs(data = second_FP, inits = second_inits, model.file = se
                          debug = FALSE)
 
 results_second_FP_sim_15 <- second_FP_sim_15$summary
-write.csv(results_second_FP_sim_15, here("02_data", "PFS_results_FP_sim15_108.csv"))
+write.csv(results_second_FP_sim_15, here("Fractional polynomials/data", "PFS_results_FP_sim15_108.csv"))
 
 array_second_FP_sim_15 <- second_FP_sim_15$sims.array
 array_second_FP_sim_15 <- array_second_FP_sim_15[, 1, time_point]
 array_second_FP_sim_15 <- apply(array_second_FP_sim_15, 2, sample, size = 500)
-write.csv(array_second_FP_sim_15, here("02_data", "PFS_array_FP_sim15.csv"))
+write.csv(array_second_FP_sim_15, here("Fractional polynomials/data", "PFS_array_FP_sim15.csv"))
 
 #8.2 ENZAMET as the trial of interest----------------------------------
 # Second-order FP, FE model, P1 = -0.5, P2 = -0.5 ----------------
-second_FP_model_FE_ENZA <- here("03_models", "second_FP_model_FE_ENZAMET.txt")
+second_FP_model_FE_ENZA <- here("Fractional polynomials/code", "second_FP_model_FE_ENZAMET.txt")
 second_FP$P1 <- -0.5
 second_FP$P2 <- -0.5
 second_FP$maxt <- 108 # increasing maximum time to extrapolate survival
@@ -980,7 +980,7 @@ second_FP_sim_14_ENZA <- bugs(data = second_FP, inits = second_inits, model.file
                          debug = FALSE)
 
 results_second_FP_sim_14_ENZA <- second_FP_sim_14_ENZA$summary
-write.csv(results_second_FP_sim_14_ENZA, here("02_data", "PFS_results_FP_sim14_ENZA.csv"))
+write.csv(results_second_FP_sim_14_ENZA, here("Fractional polynomials/data", "PFS_results_FP_sim14_ENZA.csv"))
 
 # Second-order FP, FE model, P1 = -1, P2 = 0.5 ----------------
 second_FP$P1 <- -1
@@ -992,7 +992,7 @@ second_FP_sim_11_ENZA <- bugs(data = second_FP, inits = second_inits, model.file
                          debug = FALSE)
 
 results_second_FP_sim_11_ENZA <- second_FP_sim_11_ENZA$summary
-write.csv(results_second_FP_sim_11_ENZA, here("02_data", "PFS_results_FP_sim11_ENZA.csv"))
+write.csv(results_second_FP_sim_11_ENZA, here("Fractional polynomials/data", "PFS_results_FP_sim11_ENZA.csv"))
 
 # Second-order FP, FE model, P1 = 0, P2 = 0.5 ----------------
 second_FP$P1 <- 0
@@ -1004,7 +1004,7 @@ second_FP_sim_19_ENZA <- bugs(data = second_FP, inits = second_inits, model.file
                          debug = FALSE)
 
 results_second_FP_sim_19_ENZA <- second_FP_sim_19_ENZA$summary
-write.csv(results_second_FP_sim_19_ENZA, here("02_data", "PFS_results_FP_sim19_ENZA.csv"))
+write.csv(results_second_FP_sim_19_ENZA, here("Fractional polynomials/data", "PFS_results_FP_sim19_ENZA.csv"))
 
 # Second-order FP, FE model, P1 = -1, P2 = 0.5 ----------------
 second_FP$P1 <- -1
@@ -1016,7 +1016,7 @@ second_FP_sim_10_ENZA <- bugs(data = second_FP, inits = second_inits, model.file
                          debug = FALSE)
 
 results_second_FP_sim_10_ENZA <- second_FP_sim_10_ENZA$summary
-write.csv(results_second_FP_sim_10_ENZA, here("02_data", "PFS_results_FP_sim10_ENZA.csv"))
+write.csv(results_second_FP_sim_10_ENZA, here("Fractional polynomials/data", "PFS_results_FP_sim10_ENZA.csv"))
 
 # Second-order FP, FE model, P1 = -0.5, P2 = 0 ----------------
 second_FP$P1 <- -0.5
@@ -1028,12 +1028,12 @@ second_FP_sim_15_ENZA <- bugs(data = second_FP, inits = second_inits, model.file
                          debug = FALSE)
 
 results_second_FP_sim_15_ENZA <- second_FP_sim_15_ENZA$summary
-write.csv(results_second_FP_sim_15_ENZA, here("02_data", "PFS_results_FP_sim15_ENZA.csv"))
+write.csv(results_second_FP_sim_15_ENZA, here("Fractional polynomials/data", "PFS_results_FP_sim15_ENZA.csv"))
 
 
 #8.2 CHAARTED as the trial of interest----------------------------------
 # Second-order FP, FE model, P1 = -0.5, P2 = -0.5 ----------------
-second_FP_model_FE_CHAART <- here("03_models", "second_FP_model_FE_CHAARTED.txt")
+second_FP_model_FE_CHAART <- here("Fractional polynomials/code", "second_FP_model_FE_CHAARTED.txt")
 second_FP$P1 <- -0.5
 second_FP$P2 <- -0.5
 second_FP$maxt <- 108 # increasing maximum time to extrapolate survival
@@ -1043,7 +1043,7 @@ second_FP_sim_14_CHAART <- bugs(data = second_FP, inits = second_inits, model.fi
                               debug = FALSE)
 
 results_second_FP_sim_14_CHAART <- second_FP_sim_14_CHAART$summary
-write.csv(results_second_FP_sim_14_CHAART, here("02_data", "PFS_results_FP_sim14_CHAART.csv"))
+write.csv(results_second_FP_sim_14_CHAART, here("Fractional polynomials/data", "PFS_results_FP_sim14_CHAART.csv"))
 
 # Second-order FP, FE model, P1 = -1, P2 = 0.5 ----------------
 second_FP$P1 <- -1
@@ -1055,7 +1055,7 @@ second_FP_sim_11_CHAART <- bugs(data = second_FP, inits = second_inits, model.fi
                               debug = FALSE)
 
 results_second_FP_sim_11_CHAART <- second_FP_sim_11_CHAART$summary
-write.csv(results_second_FP_sim_11_CHAART, here("02_data", "PFS_results_FP_sim11_CHAART.csv"))
+write.csv(results_second_FP_sim_11_CHAART, here("Fractional polynomials/data", "PFS_results_FP_sim11_CHAART.csv"))
 
 # Second-order FP, FE model, P1 = 0, P2 = 0.5 ----------------
 second_FP$P1 <- 0
@@ -1067,7 +1067,7 @@ second_FP_sim_19_CHAART <- bugs(data = second_FP, inits = second_inits, model.fi
                               debug = FALSE)
 
 results_second_FP_sim_19_CHAART <- second_FP_sim_19_CHAART$summary
-write.csv(results_second_FP_sim_19_CHAART, here("02_data", "PFS_results_FP_sim19_CHAART.csv"))
+write.csv(results_second_FP_sim_19_CHAART, here("Fractional polynomials/data", "PFS_results_FP_sim19_CHAART.csv"))
 
 # Second-order FP, FE model, P1 = -1, P2 = 0.5 ----------------
 second_FP$P1 <- -1
@@ -1079,7 +1079,7 @@ second_FP_sim_10_CHAART <- bugs(data = second_FP, inits = second_inits, model.fi
                               debug = FALSE)
 
 results_second_FP_sim_10_CHAART <- second_FP_sim_10_CHAART$summary
-write.csv(results_second_FP_sim_10_CHAART, here("02_data", "PFS_results_FP_sim10_CHAART.csv"))
+write.csv(results_second_FP_sim_10_CHAART, here("Fractional polynomials/data", "PFS_results_FP_sim10_CHAART.csv"))
 
 # Second-order FP, FE model, P1 = -0.5, P2 = 0 ----------------
 second_FP$P1 <- -0.5
@@ -1091,11 +1091,11 @@ second_FP_sim_15_CHAART <- bugs(data = second_FP, inits = second_inits, model.fi
                               debug = FALSE)
 
 results_second_FP_sim_15_CHAART <- second_FP_sim_15_CHAART$summary
-write.csv(results_second_FP_sim_15_CHAART, here("02_data", "PFS_results_FP_sim15_CHAART.csv"))
+write.csv(results_second_FP_sim_15_CHAART, here("Fractional polynomials/data", "PFS_results_FP_sim15_CHAART.csv"))
 
 #8.3 LATITUDE as the trial of interest----------------------------------
 # Second-order FP, FE model, P1 = -0.5, P2 = -0.5 ----------------
-second_FP_model_FE_LATITUDE <- here("03_models", "second_FP_model_FE_LATITUDE.txt")
+second_FP_model_FE_LATITUDE <- here("Fractional polynomials/code", "second_FP_model_FE_LATITUDE.txt")
 second_FP$P1 <- -0.5
 second_FP$P2 <- -0.5
 second_FP$maxt <- 108 # increasing maximum time to extrapolate survival
@@ -1105,7 +1105,7 @@ second_FP_sim_14_LATITUDE <- bugs(data = second_FP, inits = second_inits, model.
                                 debug = FALSE)
 
 results_second_FP_sim_14_LATITUDE <- second_FP_sim_14_LATITUDE$summary
-write.csv(results_second_FP_sim_14_LATITUDE, here("02_data", "PFS_results_FP_sim14_LATITUDE.csv"))
+write.csv(results_second_FP_sim_14_LATITUDE, here("Fractional polynomials/data", "PFS_results_FP_sim14_LATITUDE.csv"))
 
 # Second-order FP, FE model, P1 = -1, P2 = 0.5 ----------------
 second_FP$P1 <- -1
@@ -1117,7 +1117,7 @@ second_FP_sim_11_LATITUDE <- bugs(data = second_FP, inits = second_inits, model.
                                 debug = FALSE)
 
 results_second_FP_sim_11_LATITUDE <- second_FP_sim_11_LATITUDE$summary
-write.csv(results_second_FP_sim_11_LATITUDE, here("02_data", "PFS_results_FP_sim11_LATITUDE.csv"))
+write.csv(results_second_FP_sim_11_LATITUDE, here("Fractional polynomials/data", "PFS_results_FP_sim11_LATITUDE.csv"))
 
 # Second-order FP, FE model, P1 = 0, P2 = 0.5 ----------------
 second_FP$P1 <- 0
@@ -1129,7 +1129,7 @@ second_FP_sim_19_LATITUDE <- bugs(data = second_FP, inits = second_inits, model.
                                 debug = FALSE)
 
 results_second_FP_sim_19_LATITUDE <- second_FP_sim_19_LATITUDE$summary
-write.csv(results_second_FP_sim_19_LATITUDE, here("02_data", "PFS_results_FP_sim19_LATITUDE.csv"))
+write.csv(results_second_FP_sim_19_LATITUDE, here("Fractional polynomials/data", "PFS_results_FP_sim19_LATITUDE.csv"))
 
 # Second-order FP, FE model, P1 = -1, P2 = 0.5 ----------------
 second_FP$P1 <- -1
@@ -1141,7 +1141,7 @@ second_FP_sim_10_LATITUDE <- bugs(data = second_FP, inits = second_inits, model.
                                 debug = FALSE)
 
 results_second_FP_sim_10_LATITUDE <- second_FP_sim_10_LATITUDE$summary
-write.csv(results_second_FP_sim_10_LATITUDE, here("02_data", "PFS_results_FP_sim10_LATITUDE.csv"))
+write.csv(results_second_FP_sim_10_LATITUDE, here("Fractional polynomials/data", "PFS_results_FP_sim10_LATITUDE.csv"))
 
 # Second-order FP, FE model, P1 = -0.5, P2 = 0 ----------------
 second_FP$P1 <- -0.5
@@ -1153,7 +1153,7 @@ second_FP_sim_15_LATITUDE <- bugs(data = second_FP, inits = second_inits, model.
                                 debug = FALSE)
 
 results_second_FP_sim_15_LATITUDE <- second_FP_sim_15_LATITUDE$summary
-write.csv(results_second_FP_sim_15_LATITUDE, here("02_data", "PFS_results_FP_sim15_LATITUDE.csv"))
+write.csv(results_second_FP_sim_15_LATITUDE, here("Fractional polynomials/data", "PFS_results_FP_sim15_LATITUDE.csv"))
 
 
 #9. Export HRs for timepoints of interest--------------------------------
@@ -1190,7 +1190,7 @@ HR_48 <- paste0(HR_48[,1], " (", HR_48[,2], ",", HR_48[,3], ")")
 
 
 HRs <- cbind(HR_24, HR_36, HR_48)
-write_csv(as_tibble(HRs), here("05_tables", "time-varying_HRs_PFS_v5.csv"))
+write_csv(as_tibble(HRs), here("Fractional polynomials/data", "time-varying_HRs_PFS_v5.csv"))
 
 #10. Code to extract the RMST at 108 months-----------------------------
 # Second-order FP, FE model, P1 = 0, P2 = 0.5 (model with the lowest DIC)
@@ -1234,4 +1234,4 @@ diff <- c(NA, diff_doc, diff_enza, diff_adt, diff_abi, diff_apa,
           diff_enzadoc, diff_abidoc)
 
 # Export results
-write.csv(bind_cols(rmst, diff), here("05_tables", "rmst_pfs.csv"))
+write.csv(bind_cols(rmst, diff), here("Fractional polynomials/data", "rmst_pfs.csv"))
