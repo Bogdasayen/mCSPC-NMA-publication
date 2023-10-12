@@ -5,7 +5,7 @@
 # 1. Packages used --------------------------------------------------------
 pkgs <- c("tidyverse", "readxl", "here", "haven", "survival")
 lapply(pkgs, library, character.only = T)
-source(here("code", "utils.R"))
+source(here("Fractional polynomials/code", "utils.R"))
 set.seed(03082022)
 
 # Colors for the plots
@@ -15,22 +15,22 @@ color=c("#FF0000", "#00FF00", "#B200ED", "#FFA500", "#0000FF", "#fb9a99", "#e31a
 
 # 2. Import data --------------------------------------------------------
 # 2.1 IPDs
-load(here("02_data", "arasens_ipd.rda"))
+load(here("Fractional polynomials/data", "arasens_ipd.rda"))
 arasens <- arasens_ipd$OS
 arasens_pcb <- filter(arasens, treatment == "Placebo+docetaxel arm")
 arasens_daro <- filter(arasens, treatment == "Darolutamide+docetaxel arm")
-ENZAMET_enza_doc <- read_csv(here("02_data", "IPD reconstructed", "OS_ENZAMET_enzalutamide+Doc_ipd.csv"))
-doc <- read_csv(here("02_data", "IPD reconstructed", "OS_PEACE_ADT+Doc_ipd.csv"))
-abi <- read_csv(here("02_data", "IPD reconstructed", "OS_STAMPEDE-2_AA+ADT_ipd.csv"))
-abi2 <- read_csv(here("02_data", "IPD reconstructed", "OS_LATITUDE_AA+P+ADT_ipd.csv"))
+ENZAMET_enza_doc <- read_csv(here("Fractional polynomials/data", "IPD reconstructed", "OS_ENZAMET_enzalutamide+Doc_ipd.csv"))
+doc <- read_csv(here("Fractional polynomials/data", "IPD reconstructed", "OS_PEACE_ADT+Doc_ipd.csv"))
+abi <- read_csv(here("Fractional polynomials/data", "IPD reconstructed", "OS_STAMPEDE-2_AA+ADT_ipd.csv"))
+abi2 <- read_csv(here("Fractional polynomials/data", "IPD reconstructed", "OS_LATITUDE_AA+P+ADT_ipd.csv"))
 
 
 #2.2 Second-order model with lowest DIC (5 models)
-fp_data_1 <- read.csv(here("02_data", "OS_results_FP_sim14_108.csv"))  # model with P1: -0.5, P2: -0.5
-fp_data_2 <- read.csv(here("02_data", "OS_results_FP_sim15_108.csv"))  # model with P1: -0.5, P2:  0
-fp_data_3 <- read.csv(here("02_data", "OS_results_FP_sim11_108.csv"))  # model with P1: -1,   P2:  0.5
-fp_data_4 <- read.csv(here("02_data", "OS_results_FP_sim10_108.csv"))  # model with P1: -1,   P2:  0
-fp_data_5 <- read.csv(here("02_data", "OS_results_FP_sim09_108.csv"))  # model with P1: -1,   P2: -0.5
+fp_data_1 <- read.csv(here("Fractional polynomials/data", "OS_results_FP_sim14_108.csv"))  # model with P1: -0.5, P2: -0.5
+fp_data_2 <- read.csv(here("Fractional polynomials/data", "OS_results_FP_sim15_108.csv"))  # model with P1: -0.5, P2:  0
+fp_data_3 <- read.csv(here("Fractional polynomials/data", "OS_results_FP_sim11_108.csv"))  # model with P1: -1,   P2:  0.5
+fp_data_4 <- read.csv(here("Fractional polynomials/data", "OS_results_FP_sim10_108.csv"))  # model with P1: -1,   P2:  0
+fp_data_5 <- read.csv(here("Fractional polynomials/data", "OS_results_FP_sim09_108.csv"))  # model with P1: -1,   P2: -0.5
 
 #3. Export survival at 108 months-------------------------------------
 #3.1 Darolutamide
@@ -46,7 +46,7 @@ daro_surv_models <- bind_rows(daro_surv_model_1,
           daro_surv_model_5)
 
 daro_surv_models <- apply(daro_surv_models, 1, format_results)
-write.csv(daro_surv_models, here("05_tables", "daro_surv_models_OS.csv"))
+write.csv(daro_surv_models, here("Fractional polynomials/data", "daro_surv_models_OS.csv"))
 
 #3.2 Enzalutamide
 enza_surv_model_1 <- fp_data_1[which(fp_data_1$X == "S[4,108]"),c(6,4,8)]
@@ -61,7 +61,7 @@ enza_surv_models <- bind_rows(enza_surv_model_1,
                               enza_surv_model_5)
 
 enza_surv_models <- apply(enza_surv_models, 1, format_results)
-write.csv(enza_surv_models, here("05_tables", "enza_surv_models_OS.csv"))
+write.csv(enza_surv_models, here("Fractional polynomials/data", "enza_surv_models_OS.csv"))
 
 # 3.3 Docetaxel
 doc_surv_model_1 <- fp_data_1[which(fp_data_1$X == "S[2,108]"),c(6,4,8)]
@@ -76,7 +76,7 @@ doc_surv_models <- bind_rows( doc_surv_model_1,
                               doc_surv_model_5)
 
 doc_surv_models <- apply(doc_surv_models, 1, format_results)
-write.csv(doc_surv_models, here("05_tables", "doc_surv_models_OS.csv"))
+write.csv(doc_surv_models, here("Fractional polynomials/data", "doc_surv_models_OS.csv"))
 
 # 3.4 Abiratrone
 abi_surv_model_1 <- fp_data_1[which(fp_data_1$X == "S[5,108]"),c(6,4,8)]
@@ -91,7 +91,7 @@ abi_surv_models <- bind_rows( abi_surv_model_1,
                               abi_surv_model_5)
 
 abi_surv_models <- apply(abi_surv_models, 1, format_results)
-write.csv(abi_surv_models, here("05_tables", "abi_surv_models_OS.csv"))
+write.csv(abi_surv_models, here("Fractional polynomials/data", "abi_surv_models_OS.csv"))
 
 # 3.5 All the treatments
 # From sim14 model (P1: -0.5, P2: -0.5)
@@ -114,7 +114,7 @@ surv_108 <- bind_rows(surv_daro,
                       surv_abidoc)
 
 surv_108 <- apply(surv_108, 1, summary.stats)
-write.csv(surv_108, here("05_tables", "survival_108months_OS.csv"))
+write.csv(surv_108, here("Fractional polynomials/data", "survival_108months_OS.csv"))
 
 #4. Survival curve darolutamide ---------------------------
 # FP extrapolation
@@ -128,7 +128,7 @@ graph_daro <- data.frame(time=c(0:108),
 KM.est_daro <- survfit(Surv(time, event) ~ 1, data= arasens_daro, 
                        type="kaplan-meier", conf.int=FALSE)
 
-jpeg(file = here("04_figures", "extrapolation_darolutamide_OS.jpg"), width = 900, height = 800, res = 120)
+#jpeg(file = here("04_figures", "extrapolation_darolutamide_OS.jpg"), width = 900, height = 800, res = 120)
 
 plot(KM.est_daro, xlab="Time (months)", ylab="OS", xaxt="n", yaxt="n", main=" ",
      xlim = c(0,108), ylim=c(0,1),
@@ -157,16 +157,16 @@ legend(x = 60, y = 1,
        lty=c(1,1,1,1), ncol=1, text.width=6, box.lty=0)
 
 # save plot
-dev.off()
+#dev.off()
 
 
 #5. Survival curve enza+ADT ---------------------------
 #5.1 Second-order model with lowest DIC (5 models) ARCHES trial of interest
-fp_data_1_ARCHES <- read.csv(here("02_data", "OS_results_FP_sim14_ARCHES.csv"))  # model with P1: -0.5, P2: -0.5
-fp_data_2_ARCHES <- read.csv(here("02_data", "OS_results_FP_sim15_ARCHES.csv"))  # model with P1: -0.5, P2:  0
-fp_data_3_ARCHES <- read.csv(here("02_data", "OS_results_FP_sim11_ARCHES.csv"))  # model with P1: -1,   P2:  0.5
-fp_data_4_ARCHES <- read.csv(here("02_data", "OS_results_FP_sim10_ARCHES.csv"))  # model with P1: -1,   P2:  0
-fp_data_5_ARCHES <- read.csv(here("02_data", "OS_results_FP_sim09_ARCHES.csv"))  # model with P1: -1,   P2: -0.5
+fp_data_1_ARCHES <- read.csv(here("Fractional polynomials/data", "OS_results_FP_sim14_ARCHES.csv"))  # model with P1: -0.5, P2: -0.5
+fp_data_2_ARCHES <- read.csv(here("Fractional polynomials/data", "OS_results_FP_sim15_ARCHES.csv"))  # model with P1: -0.5, P2:  0
+fp_data_3_ARCHES <- read.csv(here("Fractional polynomials/data", "OS_results_FP_sim11_ARCHES.csv"))  # model with P1: -1,   P2:  0.5
+fp_data_4_ARCHES <- read.csv(here("Fractional polynomials/data", "OS_results_FP_sim10_ARCHES.csv"))  # model with P1: -1,   P2:  0
+fp_data_5_ARCHES <- read.csv(here("Fractional polynomials/data", "OS_results_FP_sim09_ARCHES.csv"))  # model with P1: -1,   P2: -0.5
 
 
 # FP extrapolation
@@ -180,13 +180,13 @@ graph_enza <- data.frame(time=c(0:108),
 # IPDs
 
 # ENZAMET
-ENZAMET_enza <- read_csv(here("02_data", "IPD reconstructed", "OS_ENZAMET_enzalutamide_ipd.csv"))
+ENZAMET_enza <- read_csv(here("Fractional polynomials/data", "IPD reconstructed", "OS_ENZAMET_enzalutamide_ipd.csv"))
 
 # Vaishampayan
-enza_vai <- read_csv(here("02_data", "IPD reconstructed", "OS_Vaishampayan 2021_enzalutamide_ipd.csv"))
+enza_vai <- read_csv(here("Fractional polynomials/data", "IPD reconstructed", "OS_Vaishampayan 2021_enzalutamide_ipd.csv"))
 
 # ARCHES
-enza_arches <- read_csv(here("02_data", "IPD reconstructed", "OS_ARCHES_ENZA+ADT_ipd.csv"))
+enza_arches <- read_csv(here("Fractional polynomials/data", "IPD reconstructed", "OS_ARCHES_ENZA+ADT_ipd.csv"))
 
 # KM curves
 KM.est_enza <- survfit(Surv(time, event) ~ 1, data= ENZAMET_enza, 
@@ -196,7 +196,7 @@ KM.est_enza2 <- survfit(Surv(time, event) ~ 1, data= enza_vai,
 KM.est_enza3 <- survfit(Surv(time, event) ~ 1, data= enza_arches, 
                        type="kaplan-meier", conf.int=FALSE)
 
-jpeg(file = here("04_figures", "extrapolation_enza+ADT_OS_v4.jpg"), width = 900, height = 800, res = 120)
+#jpeg(file = here("04_figures", "extrapolation_enza+ADT_OS_v4.jpg"), width = 900, height = 800, res = 120)
 
 plot(KM.est_enza, xlab="Time (months)", ylab="OS", xaxt="n", yaxt="n", main=" ",
      xlim = c(0,108), ylim=c(0,1),
@@ -227,7 +227,7 @@ legend(x = 60, y = 1,
        lty=c(1,1,1,1,1,2,3,1), lwd=c(1,1,1,1,1,1,1,2), ncol=1, text.width=6, box.lty=0)
 
 # save plot
-dev.off()
+#dev.off()
 
 
 #6. Survival curve docetaxel+ADT ---------------------------
@@ -244,19 +244,19 @@ graph_doc <- data.frame(time=c(0:108),
 arasens_pcb <- filter(arasens, treatment == "Placebo+docetaxel arm")
 
 # PEACE-1
-peace <- read_csv(here("02_data", "IPD reconstructed", "OS_PEACE_ADT+Doc_ipd.csv"))
+peace <- read_csv(here("Fractional polynomials/data", "IPD reconstructed", "OS_PEACE_ADT+Doc_ipd.csv"))
 
 # STAMPEDE-3
-stamp3 <- read_csv(here("02_data", "IPD reconstructed", "OS_STAMPEDE-3_ADT+Doc_ipd.csv"))
+stamp3 <- read_csv(here("Fractional polynomials/data", "IPD reconstructed", "OS_STAMPEDE-3_ADT+Doc_ipd.csv"))
 
 # STAMPEDE-4
-stamp4 <- read_csv(here("02_data", "IPD reconstructed", "OS_STAMPEDE-4_SOC+DocP_ipd.csv"))
+stamp4 <- read_csv(here("Fractional polynomials/data", "IPD reconstructed", "OS_STAMPEDE-4_SOC+DocP_ipd.csv"))
 
 # GETUG
-getug <- read_csv(here("02_data", "IPD reconstructed", "OS_GETUG_ADT+Doc_ipd.csv"))
+getug <- read_csv(here("Fractional polynomials/data", "IPD reconstructed", "OS_GETUG_ADT+Doc_ipd.csv"))
 
 # CHAARTED
-chaart <- read_csv(here("02_data", "IPD reconstructed", "OS_CHAARTED_ADT+Doc_ipd.csv"))
+chaart <- read_csv(here("Fractional polynomials/data", "IPD reconstructed", "OS_CHAARTED_ADT+Doc_ipd.csv"))
 
 # KM curves
 KM.est_doc <- survfit(Surv(time, event) ~ 1, data= peace, 
@@ -280,7 +280,7 @@ KM.est_doc_peace <- survfit(Surv(time, event) ~ 1, data= peace,
 KM.est_doc_chaart <- survfit(Surv(time, event) ~ 1, data= chaart, 
                        type="kaplan-meier", conf.int=FALSE)
 
-jpeg(file = here("04_figures", "extrapolation_doc+ADT_OS_v4.jpg"), width = 900, height = 800, res = 120)
+#jpeg(file = here("04_figures", "extrapolation_doc+ADT_OS_v4.jpg"), width = 900, height = 800, res = 120)
 
 plot(KM.est_doc, xlab="Time (months)", ylab="OS", xaxt="n", yaxt="n", main=" ",
      xlim = c(0,108), ylim=c(0,1),
@@ -318,7 +318,7 @@ legend(x = 0, y = 0.5,
        ncol=1, text.width=6, box.lty=0)
 
 # save plot
-dev.off()
+#dev.off()
 
 #7. Survival curve abi ---------------------------
 # abi data
@@ -332,13 +332,13 @@ graph_abi <- data.frame(time=c(0:108),
 # IPDs
 
 # STAMPEDE-2
-abi_stamp2 <- read_csv(here("02_data", "IPD reconstructed", "OS_STAMPEDE-2_AA+ADT_ipd.csv"))
+abi_stamp2 <- read_csv(here("Fractional polynomials/data", "IPD reconstructed", "OS_STAMPEDE-2_AA+ADT_ipd.csv"))
 
 # STAMPEDE-4
-abi_stamp4 <- read_csv(here("02_data", "IPD reconstructed", "OS_STAMPEDE-4_SOC+AAP_ipd.csv"))
+abi_stamp4 <- read_csv(here("Fractional polynomials/data", "IPD reconstructed", "OS_STAMPEDE-4_SOC+AAP_ipd.csv"))
 
 # LATITUDE
-abi_lat <- read_csv(here("02_data", "IPD reconstructed", "OS_LATITUDE_AA+P+ADT_ipd.csv"))
+abi_lat <- read_csv(here("Fractional polynomials/data", "IPD reconstructed", "OS_LATITUDE_AA+P+ADT_ipd.csv"))
 
 
 # KM curves
@@ -349,7 +349,7 @@ KM.est_abi2 <- survfit(Surv(time, event) ~ 1, data= abi_stamp2,
 KM.est_abi3 <- survfit(Surv(time, event) ~ 1, data= abi_stamp4, 
                       type="kaplan-meier", conf.int=FALSE)
 
-jpeg(file = here("04_figures", "extrapolation_abi+ADT_OS_v4.jpg"), width = 900, height = 800, res = 120)
+#jpeg(file = here("04_figures", "extrapolation_abi+ADT_OS_v4.jpg"), width = 900, height = 800, res = 120)
 
 plot(KM.est_abi, xlab="Time (months)", ylab="OS", xaxt="n", yaxt="n", main=" ",
      xlim = c(0,108), ylim=c(0,1),
@@ -381,7 +381,7 @@ legend(x = 60, y = 1,
        ncol=1, text.width=6, box.lty=0)
 
 # save plot
-dev.off()
+#dev.off()
 
 
 #8. Survival curve apa ---------------------------
@@ -396,13 +396,13 @@ graph_apa <- data.frame(time=c(0:108),
 #IPDs
 
 # TITAN
-apa <- read_csv(here("02_data", "IPD reconstructed", "OS_TITAN_apalutamide_ipd.csv"))
+apa <- read_csv(here("Fractional polynomials/data", "IPD reconstructed", "OS_TITAN_apalutamide_ipd.csv"))
 
 # KM curve
 KM.est_apa <- survfit(Surv(time, event) ~ 1, data= apa, 
                        type="kaplan-meier", conf.int=FALSE)
 
-jpeg(file = here("04_figures", "extrapolation_apalutamide.jpg"), width = 900, height = 800, res = 120)
+#jpeg(file = here("04_figures", "extrapolation_apalutamide.jpg"), width = 900, height = 800, res = 120)
 
 plot(KM.est_apa, xlab="Time (months)", ylab="OS", xaxt="n", yaxt="n", main=" ",
      xlim = c(0,108), ylim=c(0,1),
@@ -431,15 +431,15 @@ legend(x = 60, y = 1,
        lty=c(1,1,1,1), ncol=1, text.width=6, box.lty=0)
 
 # save plot
-dev.off()
+#dev.off()
 
 #9. Model averaging----------------------------------
 #9.1 Import model arrays  
-fp_data_1_array <- read.csv(here("02_data", "OS_array_FP_sim14.csv"))  # model with P1: -0.5, P2: -0.5
-fp_data_2_array <- read.csv(here("02_data", "OS_array_FP_sim15.csv"))  # model with P1: -0.5, P2:  0
-fp_data_3_array <- read.csv(here("02_data", "OS_array_FP_sim11.csv"))  # model with P1: -1,   P2:  0.5
-fp_data_4_array <- read.csv(here("02_data", "OS_array_FP_sim10.csv"))  # model with P1: -1,   P2:  0
-fp_data_5_array <- read.csv(here("02_data", "OS_array_FP_sim09.csv"))  # model with P1: -1,   P2: -0.5
+fp_data_1_array <- read.csv(here("Fractional polynomials/data", "OS_array_FP_sim14.csv"))  # model with P1: -0.5, P2: -0.5
+fp_data_2_array <- read.csv(here("Fractional polynomials/data", "OS_array_FP_sim15.csv"))  # model with P1: -0.5, P2:  0
+fp_data_3_array <- read.csv(here("Fractional polynomials/data", "OS_array_FP_sim11.csv"))  # model with P1: -1,   P2:  0.5
+fp_data_4_array <- read.csv(here("Fractional polynomials/data", "OS_array_FP_sim10.csv"))  # model with P1: -1,   P2:  0
+fp_data_5_array <- read.csv(here("Fractional polynomials/data", "OS_array_FP_sim09.csv"))  # model with P1: -1,   P2: -0.5
 
 #9.2 Darolutamide
 summary.stats((fp_data_1_array[,2]+ fp_data_2_array[,2]+ fp_data_3_array[,2]+
