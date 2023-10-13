@@ -1,7 +1,11 @@
 library(R2OpenBUGS)
 library(readxl)
+library(here)
 
-mHSPC_OS_data_PO <- read_excel("mHSPC OS data PO.xlsx")
+# Load the data 
+mHSPC_OS_data_PO <- read_excel(here("Inconsistency/data", "mHSPC OS data PO.xlsx"))
+
+
 #rearranging data so lowest numbered treatment is first
 mHSPC_OS_data_PO <- transform(mHSPC_OS_data_PO, y = ifelse(t2 < t1, abs(y), y))
 mHSPC_OS_data_PO <- transform(mHSPC_OS_data_PO, y = ifelse(X.ID == "#STAMPEDE-4", -(y), y))
