@@ -12,45 +12,29 @@ mHSPC_PFS_data_gleason_less_than8 <- read_excel(here("Subgroups/data", "mHSPC PF
 model_normal_identity_re <- function()
 {
   for(i in 1:ns){ # LOOP THROUGH STUDIES
-    #w[i,1] <- 0 # adjustment for multi-arm trials is zero for control arm
     delta[i,1] <- 0 # treatment effect is zero for control arm
-    # HT: Main change was to remove the mu[] since theta[i] is a LHR and not log hazard
-    # HT: The loop over k is redundant since no k index is used in lines 16-20
-    #for (k in 1:2) { # LOOP THROUGH ARMS
       var[i] <- pow(se[i,2],2) # calculate variances
       prec[i] <- 1/var[i] # set precisions
       y[i,2] ~ dnorm(theta[i],prec[i]) # normal likelihood
       theta[i] <-  delta[i,2] # model for linear predictor
       dev[i] <- (y[i,2]-theta[i])*(y[i,2]-theta[i])*prec[i] #Deviance contribution
-    #}
-    # HT: As only one arm contributes, you don't need to sum over na[i]
-    #resdev[i] <- sum(dev[i,1:na[i]]) # summed residual deviance contribution for this trial
-    # HT: Again loop over k is redundant since code below should only be used for the
-    # second arm. Note that the multi-arm correction is only needed if you are including
-    # any trials with >=3 arms
-    #for (k in 2:na[i]) { # LOOP THROUGH ARMS
-    # HT: Your taud on line below was missing a second index
+   
       delta[i,2] ~ dnorm(md[i],taud[i, 2]) # trial-specific LOR distributions
-      md[i] <- d[t[i,2]] - d[t[i,1]] # mean of treat effects distributions (with multi-arm trial correction)
-      # HT: Note that below simplifies to taud[i,2] = tau, as expected
-      taud[i,2] <- tau *2*(2-1)/2 # precision of treat effects distributions (with multi-arm trial correction)
-      #w[i,k] <- (delta[i,k] - d[t[i,k]] + d[t[i,1]]) # adjustment for multi-arm RCTs
-      #sw[i,k] <- sum(w[i,1:k-1])/(k-1) # cumulative adjustment for multi-arm trials
-    #}
+      md[i] <- d[t[i,2]] - d[t[i,1]] # mean of treat effects distributions 
+     
+      taud[i,2] <- tau *2*(2-1)/2 # precision of treat effects distributions 
   }
   # HT: Simplified as dev[i] is total residual deviance for each arm and resdev is redundant
   totresdev <- sum(dev[]) #Total Residual Deviance
   d[1]<-0 # treatment effect is zero for reference treatment
   for (k in 2:nt){ d[k] ~ dnorm(0,.0001) } # vague priors for treatment effects
-  #sd ~ dunif(0,5) # vague prior for between-trial SD.
-  #tau <- pow(sd,-2) # between-trial precision = (1/between-trial variance)
-  # HT: I had to rename var to het.var as var[] is already used for trial
+  
   # specific variance
   het.var.prec <- pow(1.41, -2) # code for 1/(1.41*1.41)
     het.var ~ dlnorm(-4.18, het.var.prec) #lognormal distribution
     tau <- pow(het.var, -1)
     
-    # ranking on relative scale                  #EK added
+    # ranking on relative scale                  
     for (k in 1:nt) {
       rk[k] <- nt+1-rank(d[],k) # assumes events are "good"
       #rk[k] <- rank(d[],k) # assumes events are "bad"
@@ -77,15 +61,13 @@ model_normal_identity_re_ht <- function()
   totresdev <- sum(dev[]) #Total Residual Deviance
   d[1]<-0 # treatment effect is zero for reference treatment
   for (k in 2:nt){ d[k] ~ dnorm(0,.0001) } # vague priors for treatment effects
-  #sd ~ dunif(0,5) # vague prior for between-trial SD.
-  #tau <- pow(sd,-2) # between-trial precision = (1/between-trial variance)
-  # HT: I had to rename var to het.var as var[] is already used for trial
+  
   # specific variance
   het.var.prec <- pow(1.41, -2) # code for 1/(1.41*1.41)
   het.var ~ dlnorm(-4.18, het.var.prec) #lognormal distribution
   tau <- pow(het.var, -1)
   
-  # ranking on relative scale                  #EK added
+  # ranking on relative scale                 
   for (k in 1:nt) {
     rk[k] <- nt+1-rank(d[],k) # assumes events are "good"
     #rk[k] <- rank(d[],k) # assumes events are "bad"
@@ -179,53 +161,20 @@ n_chains <- 3
 num_sims <- 50000 * n_chains 
 burn_in <- 50000 * n_chains	
 
-# HT: I needed to add below to actually load the data.
-# Please ensure you load the Excel data each time, so that you aren't using
-# an older version of the data!
-# HT: I set working directory to source file location and put data in same directory
-#mHSPC_OS_nice_network <- read_xlsx("mHSPC OS_nice network.xlsx")
-
 # also, to get the correct number of dimensions is good to use a "comparator" arm with 0 for the lhr and the se
 ns <- nrow(mHSPC_PFS_data_gleason_less_than8)
 t  <- array(c(mHSPC_PFS_data_gleason_less_than8$t1, mHSPC_PFS_data_gleason_less_than8$t2), dim = c(ns, 2)) 
-# HT: Used max(t) here to be more general
 nt <- max(t)
 y  <- array(c(rep(0, ns), mHSPC_PFS_data_gleason_less_than8$y), dim = c(ns, 2))
 se <- array(c(rep(0, ns), mHSPC_PFS_data_gleason_less_than8$se), dim = c(ns, 2))
-
-
-# Load the data
-#trial_data <- read.csv("Practical1_exercise1_data.csv")
-# Store BUGS data in matrices
-# Use as.matrix() to ensure data in correct format for bugs() to recognise
-#y <- as.matrix(trial_data[, c("y1", "y2", "y3")])
-#se <- as.matrix(trial_data[, c("se1", "se2", "se3")])
-# Call the treatment matrix tr to avoid overwriting the transpose function t()
-#tr <- as.matrix(trial_data[, c("t1", "t2", "t3")])
-#na <- as.vector(trial_data[, "na"])
 
 bugs_data <- list(
   y = y,
   se = se,
   t = t,
-  #na = na, not needed in this model
   ns = ns, 
   nt = nt)
 
-
-# Define the bugs data
-#bugs_data <- list("y" = y,
-                  #"se" = se,
-                  #"t" = tr,
-                  #"na" = na,
-                  #"ns" = 7, "nt" = 5)
-
-# Create initial values for MCMC simulation
-# HT: I changed the sd to het.var as sd is not used in the model
-# Note that I used het.var rather than tau, since the het.var are the random
-# parameters in the BUGS model (i.e. defined by dlnorm)
-# HT: I removed mu as no longer in model
-# HT: I also changed d to automatically depend on number of treatments
 inits1 <- list(d=c( NA, rep(0, nt - 1)), het.var= 1)
 inits2 <- list(d=c( NA, rep(-1, nt - 1)), het.var = 2)
 inits3 <- list(d=c( NA, rep(2, nt - 1)), het.var = 0.5)
