@@ -3,6 +3,10 @@
 # Load the R2OpenBUGS package
 library(R2OpenBUGS)
 library(readxl)
+library(here)
+
+# Load the data 
+mHSPC_PFS_data_high_volume <- read_excel(here("Subgroups/data", "mHSPC PFS data high_volume.xlsx"))
 
 # Normal likelihood, identity link, random effects
 model_normal_identity_re <- function()
