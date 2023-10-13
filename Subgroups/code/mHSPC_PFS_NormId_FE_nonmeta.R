@@ -5,7 +5,10 @@
 # Load the R2OpenBUGS package
 library(R2OpenBUGS)
 library(readxl)
-#mHSPC_OS_data <- read_excel("mHSPC OS data.xlsx")
+library(here)
+
+# Load the data 
+mHSPC_PFS_data_non_meta <- read_excel(here("Subgroups/data", "mHSPC PFS data non_meta.xlsx"))
 
 # Normal likelihood, identity link, fixed effects
 model_normal_identity_fe <- function()
