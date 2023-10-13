@@ -19,7 +19,7 @@ model_normal_identity_fe <- function()
       prec[i] <- 1/var[i] # set precisions
       y[i, 2] ~ dnorm(theta[i],prec[i]) # normal likelihood 
       theta[i] <- d[t[i,2]]-d[t[i,1]] # model for linear predictor DA: beware of naming parameters connsistently
-      # across the code. Here you had "delta", but then "d" is monitored.
+     
       dev[i] <- (y[i,2]-theta[i])*(y[i,2]-theta[i])*prec[i] #Deviance contribution
     }
   
@@ -123,16 +123,6 @@ n_chains <- 3
 num_sims <- 10000 * n_chains 
 burn_in <- 10000 * n_chains	
 
-# Load the data
-# Store BUGS data in matrices
-# Use as.matrix() to ensure data in correct format for bugs() to recognise
-#y <- as.vector(mHSPC_OS_data[, ("y")])
-#se <- as.vector(mHSPC_OS_data[, ("se")])
-## Call the treatment matrix tr to avoid overwriting the transpose function t()
-#tr <- as.matrix(mHSPC_OS_data[, c("t1", "t2")])
-#na <- as.vector(mHSPC_OS_data[, "na"])
-
-# Define the bugs data DA: some elements are now "tibbles", when they should be vectors or matrices
 # also, to get the correct number of dimensions is good to use a "comparator" arm with 0 for the lhr and the se
 ns <- nrow(mHSPC_OS_data_eligible)
 nt <- max(mHSPC_OS_data_eligible$t1)
@@ -144,18 +134,11 @@ bugs_data <- list(
   y = y,
   se = se,
   t = t,
-  #na = na, not needed in this model
   ns = ns, 
   nt = nt)
 
-# Create initial values for MCMC simulation DA: always check you have the right number of 
-# initial values according to the number of parameters
+# Create initial values for MCMC simulation 
 # Also I've seen wrapping the lists in a function help BUGS to converge
-
-#inits1 <- list(d=c( NA, 0,0,0,0))
-#inits2 <- list(d=c( NA, -1,-3,-1,1))
-#inits3 <- list(d=c( NA, 2,2,2,2))
-#bugs_inits <- list(inits1, inits2, inits3)
 
 bugs_inits <- function(){
   #chain 1
