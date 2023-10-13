@@ -2,6 +2,10 @@
 
 #install.packages("R2OpenBUGS") # Install the package
 library(R2OpenBUGS) # Load the package
+library(here)
+
+# Load the data 
+any_SAE <- read_excel(here("Safety/data", "any SAE.xlsx"))
 
 #Poisson likelihood with log
 # Fixed effects model for multi-arm trials
