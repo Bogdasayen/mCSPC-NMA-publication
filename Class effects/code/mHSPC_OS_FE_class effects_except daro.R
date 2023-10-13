@@ -5,8 +5,10 @@
 # Load the R2OpenBUGS package
 library(R2OpenBUGS)
 library(readxl)
-#mHSPC_OS_data_PO 
-#mHSPC_OS_data_PO_class_effects_all_merged<- read_excel("mHSPC OS data PO_class_effects_all merged.xlsx")
+library(here)
+
+# Load the data 
+mHSPC_OS_data_merged_except_daro <- read_excel(here("Class effects/data", "mHSPC OS data_merged except daro.xlsx")) 
 
 # Normal likelihood, identity link, fixed effects
 model_normal_identity_fe <- function()
