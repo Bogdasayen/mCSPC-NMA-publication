@@ -3,6 +3,10 @@
 
 # Load the R2OpenBUGS package
 library(R2OpenBUGS)
+library(here)
+
+# Load the data 
+any_SAE <- read_excel(here("Safety/data", "any SAE.xlsx"))
 
 
 # Poisson likelihood, log link, random effects
