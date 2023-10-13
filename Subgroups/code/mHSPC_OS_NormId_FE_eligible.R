@@ -1,4 +1,4 @@
-# Philip proportional hazards NMA script
+# Philip Orishaba proportional hazards NMA script
 # R2OpenBUGS 
 # Fixed effects, Normal likelihood, identity link NMA in R2OpenBUGS
 
@@ -14,12 +14,10 @@ mHSPC_OS_data_eligible <- read_excel(here("Subgroups/data", "mHSPC OS data eligi
 model_normal_identity_fe <- function()
 {
   for(i in 1:ns){ # LOOP THROUGH STUDIES
-    #delta[i,1] <- 0 # DA: delta is not a variable in the model or dataset
     mu[i] ~ dnorm(0,.0001) # vague priors for all trial baselines
-    #for (k in 1:na[i]) { # LOOP THROUGH ARMS
-      var[i] <- pow(se[i, 2],2) # calculate variances # DA: missed 1 arm
+      var[i] <- pow(se[i, 2],2) # calculate variances 
       prec[i] <- 1/var[i] # set precisions
-      y[i, 2] ~ dnorm(theta[i],prec[i]) # normal likelihood DA: missed 1 arm
+      y[i, 2] ~ dnorm(theta[i],prec[i]) # normal likelihood 
       theta[i] <- d[t[i,2]]-d[t[i,1]] # model for linear predictor DA: beware of naming parameters connsistently
       # across the code. Here you had "delta", but then "d" is monitored.
       dev[i] <- (y[i,2]-theta[i])*(y[i,2]-theta[i])*prec[i] #Deviance contribution
@@ -30,7 +28,7 @@ model_normal_identity_fe <- function()
   d[1]<-0 # treatment effect is zero for reference treatment
   for (k in 2:nt){ d[k] ~ dnorm(0,.0001) } # vague priors for treatment effects
   
-  # ranking on relative scale                  #EK added
+  # ranking on relative scale                  
   for (k in 1:nt) {
     rk[k] <- nt+1-rank(d[],k) # assumes events are "good"
     #rk[k] <- rank(d[],k) # assumes events are "bad"
