@@ -2,6 +2,10 @@
 
 #install.packages("R2OpenBUGS") # Install the package
 library(R2OpenBUGS) # Load the package
+library(here)
+
+# Load the data 
+discontinuation_due_to_AE <- read_excel(here("Safety/data", "discontinuation due to AE.xlsx"))
 
 #Poisson likelihood with log
 # Fixed effects model for multi-arm trials
