@@ -3,6 +3,10 @@
 
 # Load the R2OpenBUGS package
 library(R2OpenBUGS)
+library(here)
+
+# Load the data 
+grade_3_5_v2 <- read_excel(here("Safety/data", "grade 3-5_v2.xlsx"))
 
 
 # Poisson likelihood, log link, random effects
