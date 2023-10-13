@@ -8,7 +8,10 @@
 # Load the R2OpenBUGS package
 library(R2OpenBUGS)
 library(readxl)
-#mHSPC_OS_data_PO_NMR <- read_excel("mHSPC OS data PO_NMR.xlsx")
+library(here)
+
+# Load the data 
+mHSPC_PFS_ECOG <- read_excel(here("Meta-regressions/data", "mHSPC PFS ECOG.xlsx"))
 
 # Normal likelihood, identity link, fixed effects
 model_normal_identity_fe <- function()
@@ -149,12 +152,12 @@ burn_in <- 30000 * n_chains
 
 # Define the bugs data 
 # also, to get the correct number of dimensions is good to use a "comparator" arm with 0 for the lhr and the se
-ns <- nrow(mHSPC_PFS_ECOG_data_PO_NMR)
-t  <- array(c(mHSPC_PFS_ECOG_data_PO_NMR$t1, mHSPC_PFS_ECOG_data_PO_NMR$t2), dim = c(ns, 2)) 
+ns <- nrow(mHSPC_PFS_ECOG)
+t  <- array(c(mHSPC_PFS_ECOG$t1, mHSPC_PFS_ECOG$t2), dim = c(ns, 2)) 
 nt <- max(t) 
-y  <- array(c(rep(0, ns), mHSPC_PFS_ECOG_data_PO_NMR$y), dim = c(ns, 2))
-se <- array(c(rep(0, ns), mHSPC_PFS_ECOG_data_PO_NMR$se), dim = c(ns, 2))
-x <- mHSPC_PFS_ECOG_data_PO_NMR$x
+y  <- array(c(rep(0, ns), mHSPC_PFS_ECOG$y), dim = c(ns, 2))
+se <- array(c(rep(0, ns), mHSPC_PFS_ECOG$se), dim = c(ns, 2))
+x <- mHSPC_PFS_ECOG$x
 
 # Set reference treatment to ADT, which is most common treatment
 # This is treatment 4 in Excel sheet
@@ -166,7 +169,7 @@ t[t == 1] <- 8888
 t[t == 9999] <- 1
 t[t == 8888] <- 4
 
-study_names <- gsub("#", "", mHSPC_PFS_ECOG_data_PO_NMR$`#ID`)
+study_names <- gsub("#", "", mHSPC_PFS_ECOG$`#ID`)
 rownames(t) <- rownames(y) <- rownames(se) <- study_names
 
 
