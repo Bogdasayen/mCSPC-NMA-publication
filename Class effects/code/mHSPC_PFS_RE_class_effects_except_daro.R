@@ -6,7 +6,12 @@
 # Load the R2OpenBUGS package
 library(R2OpenBUGS)
 library(readxl)
-#mHSPC_OS_data <- read_excel("mHSPC PFS data PO.xlsx")
+library(here)
+
+# Load the data 
+mHSPC_PFS_class_effects_merged_except_daro <- read_excel(here("Class effects/data", "mHSPC PFS_class effects_merged except daro.xlsx"))
+
+
 
 
 # Random effects model
@@ -230,13 +235,13 @@ burn_in <- 10000 * n_chains
 
 # Define the bugs data 
 # also, to get the correct number of dimensions is good to use a "comparator" arm with 0 for the lhr and the se
-ns <- nrow(mHSPC_PFS_class_effects)
-t  <- array(c(mHSPC_PFS_class_effects$t1, mHSPC_PFS_class_effects$t2), dim = c(ns, 2)) 
+ns <- nrow(mHSPC_PFS_class_effects_merged_except_daro)
+t  <- array(c(mHSPC_PFS_class_effects_merged_except_daro$t1, mHSPC_PFS_class_effects_merged_except_daro$t2), dim = c(ns, 2)) 
 nt <- max(t) 
-y  <- array(c(rep(0, ns), mHSPC_PFS_class_effects$y), dim = c(ns, 2))
-se <- array(c(rep(0, ns), mHSPC_PFS_class_effects$se), dim = c(ns, 2))
+y  <- array(c(rep(0, ns), mHSPC_PFS_class_effects_merged_except_daro$y), dim = c(ns, 2))
+se <- array(c(rep(0, ns), mHSPC_PFS_class_effects_merged_except_daro$se), dim = c(ns, 2))
 
-study_names <- gsub("#", "", mHSPC_PFS_class_effects$`#ID`)
+study_names <- gsub("#", "", mHSPC_PFS_class_effects_merged_except_daro$`#ID`)
 rownames(t) <- rownames(y) <- rownames(se) <- study_names
 
 
