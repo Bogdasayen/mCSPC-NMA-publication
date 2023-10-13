@@ -1,7 +1,10 @@
 library(R2OpenBUGS)
 library(readxl)
+library(here)
 
-mHSPC_PFS_data_PO <- read_excel("mHSPC PFS data PO.xlsx")
+# Load the data 
+mHSPC_PFS_data_PO <- read_excel(here("Inconsistency/data", "mHSPC PFS data PO.xlsx"))
+
 #rearranging data so first numbered treatment is first
 mHSPC_PFS_data_PO <- transform(mHSPC_PFS_data_PO, y = ifelse(t2 > t1, y, abs(y)))
 temp <- mHSPC_PFS_data_PO$t1
