@@ -3,7 +3,10 @@
 
 # Load the R2OpenBUGS package
 library(R2OpenBUGS)
+library(here)
 
+# Load the data 
+discontinuation_due_to_AE <- read_excel(here("Safety/data", "discontinuation due to AE.xlsx"))
 
 # Poisson likelihood, log link, random effects
 
