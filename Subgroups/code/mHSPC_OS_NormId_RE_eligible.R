@@ -18,13 +18,12 @@ model_normal_identity_re <- function()
       prec[i] <- 1/var[i] # set precisions
       y[i,2] ~ dnorm(theta[i],prec[i]) # normal likelihood
       theta[i] <-  delta[i,2] # model for linear predictor
-      dev[i] <- (y[i,2]-theta[i])*(y[i,2]-theta[i])*prec[i] #Deviance contribution     #  }
+      dev[i] <- (y[i,2]-theta[i])*(y[i,2]-theta[i])*prec[i] #Deviance contribution    
   
       delta[i,2] ~ dnorm(md[i],taud[i, 2]) # trial-specific LOR distributions
       md[i] <- d[t[i,2]] - d[t[i,1]] # mean of treat effects distributions 
     
       taud[i,2] <- tau *2*(2-1)/2 # precision of treat effects distributions      
-    #}
   }
   
   totresdev <- sum(dev[]) #Total Residual Deviance
