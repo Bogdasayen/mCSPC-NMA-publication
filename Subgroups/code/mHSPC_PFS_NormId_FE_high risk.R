@@ -14,14 +14,11 @@ mHSPC_PFS_data_high_risk <- read_excel(here("Subgroups/data", "mHSPC PFS data hi
 model_normal_identity_fe <- function()
 {
   for(i in 1:ns){ # LOOP THROUGH STUDIES
-    #delta[i,1] <- 0 # DA: delta is not a variable in the model or dataset
     mu[i] ~ dnorm(0,.0001) # vague priors for all trial baselines
-    #for (k in 1:na[i]) { # LOOP THROUGH ARMS
-      var[i] <- pow(se[i, 2],2) # calculate variances # DA: missed 1 arm
+      var[i] <- pow(se[i, 2],2) # calculate variances 
       prec[i] <- 1/var[i] # set precisions
-      y[i, 2] ~ dnorm(theta[i],prec[i]) # normal likelihood DA: missed 1 arm
-      theta[i] <- d[t[i,2]]-d[t[i,1]] # model for linear predictor DA: beware of naming parameters connsistently
-      # across the code. Here you had "delta", but then "d" is monitored.
+      y[i, 2] ~ dnorm(theta[i],prec[i]) # normal likelihood 
+      theta[i] <- d[t[i,2]]-d[t[i,1]] # model for linear predictor 
       dev[i] <- (y[i,2]-theta[i])*(y[i,2]-theta[i])*prec[i] #Deviance contribution
     }
   
@@ -30,7 +27,7 @@ model_normal_identity_fe <- function()
   d[1]<-0 # treatment effect is zero for reference treatment
   for (k in 2:nt){ d[k] ~ dnorm(0,.0001) } # vague priors for treatment effects
   
-  # ranking on relative scale                  #EK added
+  # ranking on relative scale                 
   for (k in 1:nt) {
     rk[k] <- nt+1-rank(d[],k) # assumes events are "good"
     #rk[k] <- rank(d[],k) # assumes events are "bad"
@@ -125,16 +122,6 @@ n_chains <- 3
 num_sims <- 10000 * n_chains 
 burn_in <- 10000 * n_chains	
 
-# Load the data
-# Store BUGS data in matrices
-# Use as.matrix() to ensure data in correct format for bugs() to recognise
-#y <- as.vector(mHSPC_OS_data[, ("y")])
-#se <- as.vector(mHSPC_OS_data[, ("se")])
-## Call the treatment matrix tr to avoid overwriting the transpose function t()
-#tr <- as.matrix(mHSPC_OS_data[, c("t1", "t2")])
-#na <- as.vector(mHSPC_OS_data[, "na"])
-
-# Define the bugs data DA: some elements are now "tibbles", when they should be vectors or matrices
 # also, to get the correct number of dimensions is good to use a "comparator" arm with 0 for the lhr and the se
 ns <- nrow(mHSPC_PFS_data_high_risk)
 nt <- max(mHSPC_PFS_data_high_risk$t1)
@@ -149,15 +136,6 @@ bugs_data <- list(
   #na = na, not needed in this model
   ns = ns, 
   nt = nt)
-
-# Create initial values for MCMC simulation DA: always check you have the right number of 
-# initial values according to the number of parameters
-# Also I've seen wrapping the lists in a function help BUGS to converge
-
-#inits1 <- list(d=c( NA, 0,0,0,0))
-#inits2 <- list(d=c( NA, -1,-3,-1,1))
-#inits3 <- list(d=c( NA, 2,2,2,2))
-#bugs_inits <- list(inits1, inits2, inits3)
 
 bugs_inits <- function(){
   #chain 1
